@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  AGENT
+  ADMIN
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  BOOKED
+  HIDDEN
+}
+
+model Inquiry {
+  id            Int       @id @default(autoincrement())
+
+  message       String
+
+  contactName   String
+  contactEmail  String
+  contactPhone  String?
+
+  createdAt     DateTime  @default(now())
+
+  propertyId    Int
+  property      Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  customerId    Int
+  customer      User      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("inquiries")
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  name         String
+  email        String     @unique
+  password     String
+  phoneNumber  String?
+  role         UserRole   @default(CUSTOMER)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  properties   Property[]
+
+  inquiries Inquiry[]
+
+  @@map("users")
+}
+
+model Property {
+  id                   Int              @id @default(autoincrement())
+  title                String
+  description          String
+  price                Float
+  propertyType         String
+  bedrooms             Int?
+  bathrooms            Int?
+  sizeSqm              Float?
+  address              String
+  township             String
+  latitude             Float?
+  longitude            Float?
+  nearestStation       String?
+  distanceToStation    Float?
+  status               PropertyStatus   @default(AVAILABLE)
+  verificationStatus   Boolean          @default(false)
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  agentId              Int
+  agent                User             @relation(fields: [agentId], references: [id])
+
+  images               PropertyImage[]
+
+  inquiries Inquiry[]
+
+  @@map("properties")
+}
+
+model PropertyImage {
+  id            Int        @id @default(autoincrement())
+  imageUrl      String
+  displayOrder  Int?       @default(0)
+  createdAt     DateTime   @default(now())
+
+  propertyId    Int
+  property      Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_images")
+}
