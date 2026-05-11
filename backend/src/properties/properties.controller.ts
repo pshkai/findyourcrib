@@ -31,6 +31,8 @@ import {
 
 import { UpdatePropertyDto } from './dto/update-property.dto';
 
+import { AdminGuard } from '../auth/admin.guard';
+
 @Controller('properties')
 export class PropertiesController {
   constructor(
@@ -59,6 +61,26 @@ export class PropertiesController {
     @Query() query: SearchPropertyDto,
   ) {
     return this.propertiesService.search(query);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/listings')
+  getMyProperties(
+    @Req() req: any,
+  ) {
+    return this.propertiesService.getMyProperties(
+      req.user.userId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/dashboard')
+  getDashboardStats(
+    @Req() req: any,
+  ) {
+    return this.propertiesService.getDashboardStats(
+      req.user.userId,
+    );
   }
 
   @Get(':id')
@@ -112,6 +134,26 @@ export class PropertiesController {
     return this.propertiesService.delete(
       id,
       req.user.userId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id/verify')
+  verify(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.propertiesService.verifyProperty(
+      id,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id/hide')
+  hide(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.propertiesService.hideProperty(
+      id,
     );
   }
 }
