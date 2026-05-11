@@ -182,4 +182,83 @@ export class PropertiesService {
       },
     });
   }
+
+  async verifyProperty(id: number) {
+    return this.prisma.property.update({
+      where: { id },
+
+      data: {
+        verificationStatus: true,
+      },
+    });
+  }
+
+  async hideProperty(id: number) {
+    return this.prisma.property.update({
+      where: { id },
+
+      data: {
+        status: 'HIDDEN',
+      },
+    });
+  }
+
+  async getMyProperties(agentId: number) {
+    return this.prisma.property.findMany({
+      where: {
+        agentId,
+      },
+
+      include: {
+        images: true,
+
+        inquiries: true,
+      },
+
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async getDashboardStats(agentId: number) {
+    const totalProperties =
+      await this.prisma.property.count({
+        where: {
+          agentId,
+        },
+      });
+
+    const availableProperties =
+      await this.prisma.property.count({
+        where: {
+          agentId,
+          status: 'AVAILABLE',
+        },
+      });
+
+    const bookedProperties =
+      await this.prisma.property.count({
+        where: {
+          agentId,
+          status: 'BOOKED',
+        },
+      });
+
+    const totalInquiries =
+      await this.prisma.inquiry.count({
+        where: {
+          property: {
+            agentId,
+          },
+        },
+      });
+
+    return {
+      totalProperties,
+      availableProperties,
+      bookedProperties,
+      totalInquiries,
+    };
+  }
 }
