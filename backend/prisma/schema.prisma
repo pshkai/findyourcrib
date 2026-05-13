@@ -91,8 +91,12 @@ model Property {
   nearestStation       String?
   distanceToStation    Float?
   status               PropertyStatus   @default(AVAILABLE)
-  verificationStatus   Boolean          @default(false)
-  createdAt            DateTime         @default(now())
+  verificationStatus  Boolean          @default(false)
+
+  expiresAt           DateTime?
+  lastConfirmedAt     DateTime?
+
+  createdAt           DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
 
   agentId              Int
