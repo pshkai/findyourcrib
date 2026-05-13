@@ -83,6 +83,11 @@ export class PropertiesController {
     );
   }
 
+  @Get('featured')
+  getFeaturedProperties() {
+    return this.propertiesService.getFeaturedProperties();
+  }
+
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe) id: number,

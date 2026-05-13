@@ -93,6 +93,8 @@ model Property {
   status               PropertyStatus   @default(AVAILABLE)
   verificationStatus  Boolean          @default(false)
 
+  isFeatured Boolean? @default(false)
+
   expiresAt           DateTime?
   lastConfirmedAt     DateTime?
 

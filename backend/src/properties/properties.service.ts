@@ -305,4 +305,37 @@ export class PropertiesService {
       },
     });
   }
+
+  async getFeaturedProperties() {
+    return this.prisma.property.findMany({
+      where: {
+        status: 'AVAILABLE',
+
+        verificationStatus: true,
+
+        isFeatured: true,
+
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+
+      include: {
+        images: true,
+
+        agent: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: 'desc',
+      },
+
+      take: 8,
+    });
+  }
 }
