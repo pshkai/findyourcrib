@@ -1,9 +1,8 @@
-import {
-  Bath,
-  BedDouble,
-  Heart,
-  MapPin,
-} from "lucide-react";
+import Image from "next/image";
+
+import { Bath, BedDouble, Heart, MapPin } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 interface PropertyCardProps {
   image: string;
@@ -27,43 +26,32 @@ export default function PropertyCard({
   availability,
 }: PropertyCardProps) {
   const statusColors = {
-    Available:
-      "bg-emerald-100 text-emerald-700 border border-emerald-200",
-
-    Rented:
-      "bg-amber-100 text-amber-700 border border-amber-200",
-
-    Sold:
-      "bg-red-100 text-red-700 border border-red-200",
+    Available: "bg-emerald-100 text-emerald-700 border border-emerald-200",
+    Rented: "bg-amber-100 text-amber-700 border border-amber-200",
+    Sold: "bg-red-100 text-red-700 border border-red-200",
   };
 
   return (
     <div className="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
-
-      {/* Image Wrapper */}
       <div className="relative overflow-hidden">
+        <div className="relative h-72 w-full">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+        </div>
 
-        {/* Image */}
-        <img
-          src={image}
-          alt={title}
-          className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-
-        {/* Dark Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-80" />
 
-        {/* Top Controls */}
         <div className="absolute left-4 right-4 top-4 flex items-center justify-between">
-
-          {/* Availability */}
           <div
             className={`rounded-full px-3 py-1 text-xs font-semibold backdrop-blur-sm ${statusColors[availability]}`}
           >
             {availability}
           </div>
 
-          {/* Favorite */}
           <button className="rounded-full bg-white/90 p-2 shadow-lg backdrop-blur transition hover:scale-110">
             <Heart
               size={18}
@@ -72,9 +60,7 @@ export default function PropertyCard({
           </button>
         </div>
 
-        {/* Bottom Image Content */}
         <div className="absolute bottom-4 left-4 right-4 text-white">
-
           <p className="mb-2 inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-medium backdrop-blur">
             {propertyType}
           </p>
@@ -90,25 +76,16 @@ export default function PropertyCard({
         </div>
       </div>
 
-      {/* Content */}
       <div className="space-y-5 p-6">
-
-        {/* Features */}
         <div className="flex items-center justify-between rounded-2xl bg-gray-50 p-4">
-
           <div className="flex items-center gap-3">
             <div className="rounded-xl bg-white p-2 shadow-sm">
               <BedDouble size={18} />
             </div>
 
             <div>
-              <p className="text-xs text-gray-500">
-                Bedrooms
-              </p>
-
-              <p className="font-semibold text-gray-900">
-                {bedrooms}
-              </p>
+              <p className="text-xs text-gray-500">Bedrooms</p>
+              <p className="font-semibold text-gray-900">{bedrooms}</p>
             </div>
           </div>
 
@@ -120,33 +97,28 @@ export default function PropertyCard({
             </div>
 
             <div>
-              <p className="text-xs text-gray-500">
-                Bathrooms
-              </p>
-
-              <p className="font-semibold text-gray-900">
-                {bathrooms}
-              </p>
+              <p className="text-xs text-gray-500">Bathrooms</p>
+              <p className="font-semibold text-gray-900">{bathrooms}</p>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between">
-
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-gray-500">
-              Starting From
-            </p>
+            <p className="text-sm text-gray-500">Starting From</p>
 
-            <h4 className="text-3xl font-bold tracking-tight text-gray-900">
+            <h4 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
               {price}
             </h4>
           </div>
 
-          <button className="rounded-2xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800">
+          <Button
+            variant="default"
+            size="lg"
+            className="rounded-2xl bg-black text-white hover:bg-gray-800"
+          >
             View Details
-          </button>
+          </Button>
         </div>
       </div>
     </div>

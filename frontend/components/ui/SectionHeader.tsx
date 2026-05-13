@@ -12,11 +12,7 @@ export default function SectionHeader({
   centered = false,
 }: SectionHeaderProps) {
   return (
-    <div
-      className={`mb-12 ${
-        centered ? "text-center" : ""
-      }`}
-    >
+    <div className={`mb-12 ${centered ? "text-center" : ""}`}>
       {eyebrow && (
         <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">
           {eyebrow}
