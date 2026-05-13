@@ -4,6 +4,12 @@ export async function getProperties() {
   const response = await fetch(`${API_URL}/properties`, {
     cache: "no-store",
   });
+  const response = await fetch(
+    `${API_URL}/properties`,
+    {
+      cache: "no-store",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch properties");
@@ -18,6 +24,16 @@ export async function getPropertyById(id: string) {
   const response = await fetch(`${API_URL}/properties/${id}`, {
     cache: "no-store",
   });
+  return response.json();
+}
+
+export async function getPropertyById(id: string) {
+  const response = await fetch(
+    `${API_URL}/properties/${id}`,
+    {
+      cache: "no-store",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch property");

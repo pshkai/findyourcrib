@@ -13,6 +13,7 @@ export default function SearchSection() {
             <input
               type="text"
               placeholder="Bangkok, Phuket, Chiang Mai..."
+              placeholder="Location"
               className="rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none"
             />
 
@@ -22,6 +23,9 @@ export default function SearchSection() {
               <option>Apartment</option>
               <option>Villa</option>
               <option>House</option>
+              <option>Apartment</option>
+              <option>House</option>
+              <option>Villa</option>
             </select>
 
             <select className="rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none">
@@ -33,11 +37,17 @@ export default function SearchSection() {
 
             <Button
               asChild
+              <option>$100-$500</option>
+              <option>$500-$1000</option>
+            </select>
+
+            <Button
               variant="default"
               size="lg"
               className="rounded-xl bg-black text-white hover:bg-gray-800"
             >
               <Link href="/properties">Search</Link>
+              Search
             </Button>
           </div>
         </FadeIn>

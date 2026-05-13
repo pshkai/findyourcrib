@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum UserRole {
@@ -39,6 +40,22 @@ model Inquiry {
   @@map("inquiries")
 }
 
+model Favorite {
+  id          Int       @id @default(autoincrement())
+
+  createdAt   DateTime  @default(now())
+
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  propertyId  Int
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+
+  @@map("favorites")
+}
+
 model User {
   id           Int        @id @default(autoincrement())
   name         String
@@ -52,6 +69,8 @@ model User {
   properties   Property[]
 
   inquiries Inquiry[]
+
+  favorites Favorite[]
 
   @@map("users")
 }
@@ -72,8 +91,14 @@ model Property {
   nearestStation       String?
   distanceToStation    Float?
   status               PropertyStatus   @default(AVAILABLE)
-  verificationStatus   Boolean          @default(false)
-  createdAt            DateTime         @default(now())
+  verificationStatus  Boolean          @default(false)
+
+  isFeatured Boolean? @default(false)
+
+  expiresAt           DateTime?
+  lastConfirmedAt     DateTime?
+
+  createdAt           DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
 
   agentId              Int
@@ -82,6 +107,8 @@ model Property {
   images               PropertyImage[]
 
   inquiries Inquiry[]
+
+  favorites Favorite[]
 
   @@map("properties")
 }
@@ -96,4 +123,26 @@ model PropertyImage {
   property      Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@map("property_images")
+}
+
+model Amenity {
+  id         Int                 @id @default(autoincrement())
+
+  name       String              @unique
+
+  properties PropertyAmenity[]
+
+  @@map("amenities")
+}
+
+model PropertyAmenity {
+  id          Int       @id @default(autoincrement())
+
+  propertyId  Int
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  amenityId   Int
+  amenity     Amenity   @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@map("property_amenities")
 }

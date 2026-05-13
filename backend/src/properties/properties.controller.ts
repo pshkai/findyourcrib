@@ -83,6 +83,26 @@ export class PropertiesController {
     );
   }
 
+  @Get('featured')
+  getFeaturedProperties() {
+    return this.propertiesService.getFeaturedProperties();
+  }
+
+  @Get('nearby')
+  nearbySearch(
+    @Query('lat') lat: string,
+
+    @Query('lng') lng: string,
+
+    @Query('radius') radius: string,
+  ) {
+    return this.propertiesService.nearbySearch(
+      Number(lat),
+      Number(lng),
+      Number(radius || 5),
+    );
+  }
+
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe) id: number,
@@ -154,6 +174,18 @@ export class PropertiesController {
   ) {
     return this.propertiesService.hideProperty(
       id,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/confirm')
+  confirmAvailability(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: any,
+  ) {
+    return this.propertiesService.confirmAvailability(
+      id,
+      req.user.userId,
     );
   }
 }
