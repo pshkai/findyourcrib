@@ -88,6 +88,21 @@ export class PropertiesController {
     return this.propertiesService.getFeaturedProperties();
   }
 
+  @Get('nearby')
+  nearbySearch(
+    @Query('lat') lat: string,
+
+    @Query('lng') lng: string,
+
+    @Query('radius') radius: string,
+  ) {
+    return this.propertiesService.nearbySearch(
+      Number(lat),
+      Number(lng),
+      Number(radius || 5),
+    );
+  }
+
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe) id: number,

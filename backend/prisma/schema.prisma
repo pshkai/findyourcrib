@@ -124,3 +124,25 @@ model PropertyImage {
 
   @@map("property_images")
 }
+
+model Amenity {
+  id         Int                 @id @default(autoincrement())
+
+  name       String              @unique
+
+  properties PropertyAmenity[]
+
+  @@map("amenities")
+}
+
+model PropertyAmenity {
+  id          Int       @id @default(autoincrement())
+
+  propertyId  Int
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  amenityId   Int
+  amenity     Amenity   @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@map("property_amenities")
+}
