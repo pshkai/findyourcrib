@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum UserRole {
@@ -39,6 +40,22 @@ model Inquiry {
   @@map("inquiries")
 }
 
+model Favorite {
+  id          Int       @id @default(autoincrement())
+
+  createdAt   DateTime  @default(now())
+
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  propertyId  Int
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+
+  @@map("favorites")
+}
+
 model User {
   id           Int        @id @default(autoincrement())
   name         String
@@ -52,6 +69,8 @@ model User {
   properties   Property[]
 
   inquiries Inquiry[]
+
+  favorites Favorite[]
 
   @@map("users")
 }
@@ -82,6 +101,8 @@ model Property {
   images               PropertyImage[]
 
   inquiries Inquiry[]
+
+  favorites Favorite[]
 
   @@map("properties")
 }
