@@ -156,4 +156,16 @@ export class PropertiesController {
       id,
     );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/confirm')
+  confirmAvailability(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: any,
+  ) {
+    return this.propertiesService.confirmAvailability(
+      id,
+      req.user.userId,
+    );
+  }
 }

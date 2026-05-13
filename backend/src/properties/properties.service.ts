@@ -74,6 +74,10 @@ export class PropertiesService {
       where: {
         status: 'AVAILABLE',
 
+        expiresAt: {
+          gt: new Date(),
+        },
+
         township: dto.township
           ? {
               contains: dto.township,
@@ -260,5 +264,45 @@ export class PropertiesService {
       bookedProperties,
       totalInquiries,
     };
+  }
+
+  async confirmAvailability(
+    propertyId: number,
+    agentId: number,
+  ) {
+    const property =
+      await this.prisma.property.findUnique({
+        where: {
+          id: propertyId,
+        },
+      });
+
+    if (!property) {
+      throw new Error('Property not found');
+    }
+
+    if (property.agentId !== agentId) {
+      throw new Error(
+        'You do not own this property',
+      );
+    }
+
+    const nextExpiry = new Date();
+
+    nextExpiry.setDate(
+      nextExpiry.getDate() + 30,
+    );
+
+    return this.prisma.property.update({
+      where: {
+        id: propertyId,
+      },
+
+      data: {
+        lastConfirmedAt: new Date(),
+        expiresAt: nextExpiry,
+        status: 'AVAILABLE',
+      },
+    });
   }
 }
