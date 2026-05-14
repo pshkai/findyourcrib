@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Building2, House, Search, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { Building2, House, Search, ShieldCheck } from "lucide-react";
 
 import Container from "@/components/ui/Container";
 import FadeIn from "@/components/ui/FadeIn";
@@ -16,7 +16,7 @@ export default function HeroSection() {
           fill
           priority
           loading="eager"
-           sizes="100vw"
+          sizes="100vw"
           className="object-cover"
         />
       </div>
@@ -31,7 +31,6 @@ export default function HeroSection() {
             <div>
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-md">
                 <ShieldCheck size={18} className="text-blue-400" />
-
                 <span className="text-sm font-medium">
                   Verified rentals across Thailand
                 </span>
@@ -39,9 +38,7 @@ export default function HeroSection() {
 
               <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-7xl">
                 Find Your
-                <span className="block text-blue-400">
-                  Perfect Home
-                </span>
+                <span className="block text-blue-400">Perfect Home</span>
                 In Thailand
               </h1>
 
@@ -82,9 +79,7 @@ export default function HeroSection() {
 
                 <div>
                   <h3 className="text-3xl font-bold">98%</h3>
-                  <p className="text-sm text-gray-300">
-                    Verified Properties
-                  </p>
+                  <p className="text-sm text-gray-300">Verified Properties</p>
                 </div>
 
                 <div>
@@ -104,9 +99,7 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-300">
-                      Properties Listed
-                    </p>
+                    <p className="text-sm text-gray-300">Properties Listed</p>
                     <h3 className="text-3xl font-bold">1,200+</h3>
                   </div>
                 </div>
@@ -121,9 +114,7 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-300">
-                      Trusted Agents
-                    </p>
+                    <p className="text-sm text-gray-300">Trusted Agents</p>
                     <h3 className="text-3xl font-bold">300+</h3>
                   </div>
                 </div>

@@ -59,7 +59,10 @@ export default function PropertyCard({
           </div>
 
           <button className="rounded-full bg-white/90 p-2 shadow-lg backdrop-blur transition hover:scale-110">
-            <Heart size={18} className="text-gray-700 transition hover:text-red-500" />
+            <Heart
+              size={18}
+              className="text-gray-700 transition hover:text-red-500"
+            />
           </button>
         </div>
 
@@ -112,7 +115,11 @@ export default function PropertyCard({
             </h4>
           </div>
 
-          <Button asChild size="lg" className="rounded-2xl bg-black text-white hover:bg-gray-800">
+          <Button
+            asChild
+            size="lg"
+            className="rounded-2xl bg-black text-white hover:bg-gray-800"
+          >
             <Link href={detailsHref}>View Details</Link>
           </Button>
         </div>

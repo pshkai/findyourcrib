@@ -22,12 +22,7 @@ export default async function FeaturedProperties() {
               description="Browse verified condos, apartments, and villas across Bangkok, Chiang Mai, Phuket, and more."
             />
 
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="mb-12 rounded-xl"
-            >
+            <Button asChild variant="outline" size="lg" className="mb-12 rounded-xl">
               <Link href="/properties">View All</Link>
             </Button>
           </div>

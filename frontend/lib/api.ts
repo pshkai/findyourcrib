@@ -46,7 +46,6 @@ export async function createInquiry(
   const data = await response.json();
 
   if (!response.ok) {
-    console.error("Inquiry API error:", data);
     throw new Error(data.message || "Failed to send inquiry");
   }
 
@@ -128,6 +127,7 @@ export async function getMyListings(token: string) {
 
   return data;
 }
+
 export async function createProperty(
   token: string,
   propertyData: {
