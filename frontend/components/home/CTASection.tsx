@@ -10,6 +10,7 @@ export default function CTASection() {
           <div className="rounded-3xl bg-black px-6 py-14 text-center text-white sm:px-10 sm:py-20">
             <p className="mb-3 text-sm uppercase tracking-[0.3em] text-blue-400">
               For Property Owners
+              Get Started
             </p>
 
             <h2 className="text-3xl font-bold sm:text-4xl">
@@ -19,6 +20,7 @@ export default function CTASection() {
             <p className="mx-auto mt-6 max-w-2xl text-base text-gray-300 sm:text-lg">
               Reach renters looking for condos, apartments, rooms, and villas
               across Thailand.
+              Reach thousands of renters and buyers looking for their next home.
             </p>
 
             <Button

@@ -110,6 +110,7 @@ export default function PropertyCard({
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-sm text-gray-500">Starting From</p>
+
             <h4 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
               {price}
             </h4>
@@ -121,6 +122,12 @@ export default function PropertyCard({
             className="rounded-2xl bg-black text-white hover:bg-gray-800"
           >
             <Link href={detailsHref}>View Details</Link>
+          <Button
+            variant="default"
+            size="lg"
+            className="rounded-2xl bg-black text-white hover:bg-gray-800"
+          >
+            View Details
           </Button>
         </div>
       </div>

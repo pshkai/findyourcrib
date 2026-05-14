@@ -10,6 +10,7 @@ import { getProperties } from "@/lib/api";
 export default async function FeaturedProperties() {
   const properties = await getProperties();
   const featuredProperties = properties.slice(0, 3);
+import { properties } from "@/data/properties";
 
   return (
     <section className="bg-gray-50 py-16 sm:py-20">
@@ -24,6 +25,12 @@ export default async function FeaturedProperties() {
 
             <Button asChild variant="outline" size="lg" className="mb-12 rounded-xl">
               <Link href="/properties">View All</Link>
+              title="Discover Featured Properties"
+              description="Browse hand-picked premium properties across Nepal with verified listings and modern amenities."
+            />
+
+            <Button variant="outline" size="lg" className="mb-12 rounded-xl">
+              View All
             </Button>
           </div>
         </FadeIn>
@@ -39,6 +46,12 @@ export default async function FeaturedProperties() {
                 }
                 title={property.title}
                 price={`฿${property.price.toLocaleString()}/month`}
+          {properties.map((property, index) => (
+            <FadeIn key={property.id} delay={index * 0.08}>
+              <PropertyCard
+                image={property.image}
+                title={property.title}
+                price={property.price}
                 township={property.township}
                 bedrooms={property.bedrooms}
                 bathrooms={property.bathrooms}
@@ -46,6 +59,7 @@ export default async function FeaturedProperties() {
                 availability={
                   property.status === "AVAILABLE" ? "Available" : "Rented"
                 }
+                availability={property.availability}
               />
             </FadeIn>
           ))}

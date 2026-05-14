@@ -22,7 +22,9 @@ export default function HeroSection() {
       </div>
 
       <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/40" />
+
       <div className="absolute left-0 top-0 h-96 w-96 rounded-full bg-blue-500/20 blur-3xl" />
+
       <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-purple-500/20 blur-3xl" />
 
       <Container className="relative z-10 py-20">
@@ -31,6 +33,7 @@ export default function HeroSection() {
             <div>
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-md">
                 <ShieldCheck size={18} className="text-blue-400" />
+
                 <span className="text-sm font-medium">
                   Verified rentals across Thailand
                 </span>
@@ -38,7 +41,9 @@ export default function HeroSection() {
 
               <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-7xl">
                 Find Your
-                <span className="block text-blue-400">Perfect Home</span>
+                <span className="block text-blue-400">
+                  Perfect Home
+                </span>
                 In Thailand
               </h1>
 
@@ -66,7 +71,9 @@ export default function HeroSection() {
                     size="lg"
                     className="rounded-2xl bg-blue-600 px-8 py-4 text-white hover:bg-blue-700"
                   >
-                    <Link href="/properties">Search</Link>
+                    <Link href="/properties">
+                      Search
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -74,17 +81,23 @@ export default function HeroSection() {
               <div className="mt-10 flex flex-wrap items-center gap-8">
                 <div>
                   <h3 className="text-3xl font-bold">500+</h3>
-                  <p className="text-sm text-gray-300">Thai Listings</p>
+                  <p className="text-sm text-gray-300">
+                    Thai Listings
+                  </p>
                 </div>
 
                 <div>
                   <h3 className="text-3xl font-bold">98%</h3>
-                  <p className="text-sm text-gray-300">Verified Properties</p>
+                  <p className="text-sm text-gray-300">
+                    Verified Properties
+                  </p>
                 </div>
 
                 <div>
                   <h3 className="text-3xl font-bold">24/7</h3>
-                  <p className="text-sm text-gray-300">Inquiry Support</p>
+                  <p className="text-sm text-gray-300">
+                    Inquiry Support
+                  </p>
                 </div>
               </div>
             </div>
@@ -99,8 +112,13 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-300">Properties Listed</p>
-                    <h3 className="text-3xl font-bold">1,200+</h3>
+                    <p className="text-sm text-gray-300">
+                      Properties Listed
+                    </p>
+
+                    <h3 className="text-3xl font-bold">
+                      1,200+
+                    </h3>
                   </div>
                 </div>
               </div>
@@ -114,8 +132,13 @@ export default function HeroSection() {
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-300">Trusted Agents</p>
-                    <h3 className="text-3xl font-bold">300+</h3>
+                    <p className="text-sm text-gray-300">
+                      Trusted Agents
+                    </p>
+
+                    <h3 className="text-3xl font-bold">
+                      300+
+                    </h3>
                   </div>
                 </div>
               </div>
