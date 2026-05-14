@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import PropertyCard from "@/components/PropertyCard";
 import UploadPropertyImage from "@/components/dashboard/UploadPropertyImage";
+import DeletePropertyButton from "@/components/dashboard/DeletePropertyButton";
 import { getMyListings } from "@/lib/api";
 
 export default function MyListingsPage() {
@@ -91,6 +92,11 @@ export default function MyListingsPage() {
               <UploadPropertyImage
                 propertyId={property.id}
                 onUploadSuccess={loadListings}
+              />
+
+              <DeletePropertyButton
+                propertyId={property.id}
+                onDeleteSuccess={loadListings}
               />
             </div>
           ))}

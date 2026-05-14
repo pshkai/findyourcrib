@@ -236,3 +236,27 @@ export async function uploadPropertyImage(
 
   return data;
 }
+export async function deleteProperty(
+  token: string,
+  propertyId: number
+) {
+  const response = await fetch(
+    `${API_URL}/properties/${propertyId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(
+      data.message || "Failed to delete property"
+    );
+  }
+
+  return true;
+}
