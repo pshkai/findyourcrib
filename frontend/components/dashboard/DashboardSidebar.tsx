@@ -2,9 +2,10 @@ import Link from "next/link";
 
 import {
   Building2,
+  Heart,
   LayoutDashboard,
-  PlusCircle,
   MessageSquare,
+  PlusCircle,
   Settings,
 } from "lucide-react";
 
@@ -26,6 +27,11 @@ export default function DashboardSidebar() {
       icon: PlusCircle,
     },
     {
+      label: "Favorites",
+      href: "/favorites",
+      icon: Heart,
+    },
+    {
       label: "Inquiries",
       href: "/dashboard/inquiries",
       icon: MessageSquare,
@@ -39,7 +45,10 @@ export default function DashboardSidebar() {
 
   return (
     <aside className="hidden min-h-screen w-72 border-r border-gray-200 bg-white px-6 py-8 lg:block">
-      <Link href="/" className="text-2xl font-bold tracking-tight">
+      <Link
+        href="/"
+        className="text-2xl font-bold tracking-tight"
+      >
         FYC
       </Link>
 

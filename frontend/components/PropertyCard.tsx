@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Bath, BedDouble, Heart, MapPin } from "lucide-react";
+import { Bath, BedDouble, MapPin } from "lucide-react";
 
+import FavoriteButton from "@/components/FavoriteButton";
 import { Button } from "@/components/ui/button";
 
 interface PropertyCardProps {
@@ -58,12 +59,7 @@ export default function PropertyCard({
             {availability}
           </div>
 
-          <button className="rounded-full bg-white/90 p-2 shadow-lg backdrop-blur transition hover:scale-110">
-            <Heart
-              size={18}
-              className="text-gray-700 transition hover:text-red-500"
-            />
-          </button>
+          {id && <FavoriteButton propertyId={id} />}
         </div>
 
         <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -71,7 +67,9 @@ export default function PropertyCard({
             {propertyType}
           </p>
 
-          <h3 className="line-clamp-1 text-2xl font-bold">{title}</h3>
+          <h3 className="line-clamp-1 text-2xl font-bold">
+            {title}
+          </h3>
 
           <div className="mt-2 flex items-center gap-2 text-sm text-gray-200">
             <MapPin size={16} />
@@ -88,8 +86,13 @@ export default function PropertyCard({
             </div>
 
             <div>
-              <p className="text-xs text-gray-500">Bedrooms</p>
-              <p className="font-semibold text-gray-900">{bedrooms}</p>
+              <p className="text-xs text-gray-500">
+                Bedrooms
+              </p>
+
+              <p className="font-semibold text-gray-900">
+                {bedrooms}
+              </p>
             </div>
           </div>
 
@@ -101,15 +104,23 @@ export default function PropertyCard({
             </div>
 
             <div>
-              <p className="text-xs text-gray-500">Bathrooms</p>
-              <p className="font-semibold text-gray-900">{bathrooms}</p>
+              <p className="text-xs text-gray-500">
+                Bathrooms
+              </p>
+
+              <p className="font-semibold text-gray-900">
+                {bathrooms}
+              </p>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-gray-500">Starting From</p>
+            <p className="text-sm text-gray-500">
+              Starting From
+            </p>
+
             <h4 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
               {price}
             </h4>
@@ -120,7 +131,9 @@ export default function PropertyCard({
             size="lg"
             className="rounded-2xl bg-black text-white hover:bg-gray-800"
           >
-            <Link href={detailsHref}>View Details</Link>
+            <Link href={detailsHref}>
+              View Details
+            </Link>
           </Button>
         </div>
       </div>

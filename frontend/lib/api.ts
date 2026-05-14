@@ -161,3 +161,53 @@ export async function createProperty(
 
   return data;
 }
+
+export async function getFavorites(token: string) {
+  const response = await fetch(`${API_URL}/favorites`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch favorites");
+  }
+
+  return data;
+}
+
+export async function addFavorite(token: string, propertyId: number) {
+  const response = await fetch(`${API_URL}/favorites/${propertyId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to add favorite");
+  }
+
+  return data;
+}
+
+export async function removeFavorite(token: string, propertyId: number) {
+  const response = await fetch(`${API_URL}/favorites/${propertyId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to remove favorite");
+  }
+
+  return data;
+}
