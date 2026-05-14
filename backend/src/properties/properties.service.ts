@@ -74,6 +74,10 @@ export class PropertiesService {
       where: {
         status: 'AVAILABLE',
 
+        expiresAt: {
+          gt: new Date(),
+        },
+
         township: dto.township
           ? {
               contains: dto.township,
@@ -260,5 +264,157 @@ export class PropertiesService {
       bookedProperties,
       totalInquiries,
     };
+  }
+
+  async confirmAvailability(
+    propertyId: number,
+    agentId: number,
+  ) {
+    const property =
+      await this.prisma.property.findUnique({
+        where: {
+          id: propertyId,
+        },
+      });
+
+    if (!property) {
+      throw new Error('Property not found');
+    }
+
+    if (property.agentId !== agentId) {
+      throw new Error(
+        'You do not own this property',
+      );
+    }
+
+    const nextExpiry = new Date();
+
+    nextExpiry.setDate(
+      nextExpiry.getDate() + 30,
+    );
+
+    return this.prisma.property.update({
+      where: {
+        id: propertyId,
+      },
+
+      data: {
+        lastConfirmedAt: new Date(),
+        expiresAt: nextExpiry,
+        status: 'AVAILABLE',
+      },
+    });
+  }
+
+  async getFeaturedProperties() {
+    return this.prisma.property.findMany({
+      where: {
+        status: 'AVAILABLE',
+
+        verificationStatus: true,
+
+        isFeatured: true,
+
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+
+      include: {
+        images: true,
+
+        agent: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: 'desc',
+      },
+
+      take: 8,
+    });
+  }
+
+  async nearbySearch(
+    lat: number,
+    lng: number,
+    radiusKm: number,
+  ) {
+    const properties =
+      await this.prisma.property.findMany({
+        where: {
+          status: 'AVAILABLE',
+
+          expiresAt: {
+            gt: new Date(),
+          },
+
+          latitude: {
+            not: null,
+          },
+
+          longitude: {
+            not: null,
+          },
+        },
+
+        include: {
+          images: true,
+        },
+      });
+
+    return properties.filter((property) => {
+      if (
+        property.latitude == null ||
+        property.longitude == null
+      ) {
+        return false;
+      }
+
+      const distance =
+        this.calculateDistanceKm(
+          lat,
+          lng,
+          property.latitude,
+          property.longitude,
+        );
+
+      return distance <= radiusKm;
+    });
+  }
+
+  private calculateDistanceKm(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number,
+  ) {
+    const R = 6371;
+
+    const dLat =
+      ((lat2 - lat1) * Math.PI) / 180;
+
+    const dLon =
+      ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(dLat / 2) *
+        Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c =
+      2 * Math.atan2(
+        Math.sqrt(a),
+        Math.sqrt(1 - a),
+      );
+
+    return R * c;
   }
 }
