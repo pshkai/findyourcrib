@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import PropertyCard from "@/components/PropertyCard";
+import UploadPropertyImage from "@/components/dashboard/UploadPropertyImage";
 import { getMyListings } from "@/lib/api";
 
 export default function MyListingsPage() {
@@ -12,29 +13,32 @@ export default function MyListingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    async function loadListings() {
-      try {
-        const token = localStorage.getItem("token");
+  async function loadListings() {
+    try {
+      setIsLoading(true);
+      setErrorMessage("");
 
-        if (!token) {
-          setErrorMessage("Please login to view your listings.");
-          return;
-        }
+      const token = localStorage.getItem("token");
 
-        const data = await getMyListings(token);
-        setListings(data);
-      } catch (error) {
-        if (error instanceof Error) {
-          setErrorMessage(error.message);
-        } else {
-          setErrorMessage("Failed to load listings.");
-        }
-      } finally {
-        setIsLoading(false);
+      if (!token) {
+        setErrorMessage("Please login to view your listings.");
+        return;
       }
-    }
 
+      const data = await getMyListings(token);
+      setListings(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Failed to load listings.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
     loadListings();
   }, []);
 
@@ -64,25 +68,31 @@ export default function MyListingsPage() {
       )}
 
       {!isLoading && !errorMessage && listings.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
           {listings.map((property: any) => (
-            <PropertyCard
-              key={property.id}
-              id={property.id}
-              image={
-                property.images?.[0]?.imageUrl ||
-                "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"
-              }
-              title={property.title}
-              price={`฿${property.price.toLocaleString()}/month`}
-              township={property.township}
-              bedrooms={property.bedrooms}
-              bathrooms={property.bathrooms}
-              propertyType={property.propertyType}
-              availability={
-                property.status === "AVAILABLE" ? "Available" : "Rented"
-              }
-            />
+            <div key={property.id} className="space-y-4">
+              <PropertyCard
+                id={property.id}
+                image={
+                  property.images?.[0]?.imageUrl ||
+                  "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"
+                }
+                title={property.title}
+                price={`฿${property.price.toLocaleString()}/month`}
+                township={property.township}
+                bedrooms={property.bedrooms}
+                bathrooms={property.bathrooms}
+                propertyType={property.propertyType}
+                availability={
+                  property.status === "AVAILABLE" ? "Available" : "Rented"
+                }
+              />
+
+              <UploadPropertyImage
+                propertyId={property.id}
+                onUploadSuccess={loadListings}
+              />
+            </div>
           ))}
         </div>
       )}

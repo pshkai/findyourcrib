@@ -210,4 +210,29 @@ export async function removeFavorite(token: string, propertyId: number) {
   }
 
   return data;
+} 
+export async function uploadPropertyImage(
+  token: string,
+  propertyId: number,
+  file: File
+) {
+  const formData = new FormData();
+
+  formData.append("image", file);
+
+  const response = await fetch(`${API_URL}/properties/${propertyId}/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to upload image");
+  }
+
+  return data;
 }

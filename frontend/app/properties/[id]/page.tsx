@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Bath, BedDouble, MapPin, Ruler } from "lucide-react";
 
 import Container from "@/components/ui/Container";
-import { Button } from "@/components/ui/button";
 import InquiryForm from "@/components/properties/InquiryForm";
 
 import { getPropertyById } from "@/lib/api";
@@ -30,6 +29,10 @@ export default async function PropertyDetailsPage({ params }: PageProps) {
     notFound();
   }
 
+  const mainImage =
+    property.images?.[0]?.imageUrl ||
+    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85";
+
   return (
     <section className="bg-gray-50 py-16 sm:py-20">
       <Container>
@@ -37,15 +40,32 @@ export default async function PropertyDetailsPage({ params }: PageProps) {
           <div>
             <div className="relative h-[500px] overflow-hidden rounded-3xl">
               <Image
-                src={
-                  property.images?.[0]?.imageUrl ||
-                  "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"
-                }
+                src={mainImage}
                 alt={property.title}
                 fill
+                sizes="100vw"
                 className="object-cover"
               />
             </div>
+
+            {property.images?.length > 1 && (
+              <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+                {property.images.map((image: any) => (
+                  <div
+                    key={image.id}
+                    className="relative h-32 overflow-hidden rounded-2xl"
+                  >
+                    <Image
+                      src={image.imageUrl}
+                      alt={property.title}
+                      fill
+                      sizes="25vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="mt-8 rounded-3xl bg-white p-8 shadow-sm">
               <div className="flex flex-wrap items-center gap-4">
@@ -149,9 +169,7 @@ export default async function PropertyDetailsPage({ params }: PageProps) {
             </div>
 
             <div className="mt-8 border-t border-gray-200 pt-6">
-              <h3 className="font-semibold text-gray-900">
-                Send Inquiry
-              </h3>
+              <h3 className="font-semibold text-gray-900">Send Inquiry</h3>
 
               <InquiryForm propertyId={id} />
             </div>
