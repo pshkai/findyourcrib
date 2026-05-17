@@ -32,8 +32,8 @@ export default function RootLayout({
         className={`${jakarta.variable} ${playfair.variable} font-sans bg-white text-gray-900`}
       >
         <Navbar />
-
-        <main>{children}</main>
+        {children}
+        <Footer />
       </body>
     </html>
   );
