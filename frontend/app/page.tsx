@@ -1,65 +1,129 @@
-import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+import PropertyCard from "@/components/PropertyCard";
+import { getProperties } from "@/lib/api";
+
+export default async function Home() {
+  const properties = await getProperties();
+  const featuredProperties = properties.slice(0, 3);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      <section className="bg-gradient-to-br from-gray-50 to-white px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">
+              Find Your Crib
+            </p>
+
+            <h1 className="mt-5 max-w-3xl text-5xl font-bold leading-tight text-gray-900 sm:text-6xl">
+              Find verified rental homes across Thailand.
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+              Browse condos, apartments, villas, and houses in Bangkok,
+              Chiang Mai, Phuket, and other popular areas.
+            </p>
+
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="/properties"
+                className="rounded-full bg-black px-7 py-4 text-center text-sm font-semibold text-white transition hover:bg-gray-800"
+              >
+                Browse Properties
+              </Link>
+
+              <Link
+                href="/register"
+                className="rounded-full border border-gray-300 px-7 py-4 text-center text-sm font-semibold text-gray-900 transition hover:bg-gray-100"
+              >
+                List Your Property
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] bg-white p-4 shadow-2xl">
+            <div className="h-[420px] rounded-[1.5rem] bg-[url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85')] bg-cover bg-center" />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </section>
+
+      <section className="bg-white px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-[2rem] border border-gray-200 bg-white p-6 shadow-xl">
+          <div className="grid gap-4 md:grid-cols-4">
+            <input
+              type="text"
+              placeholder="Bangkok, Phuket, Chiang Mai..."
+              className="rounded-2xl border border-gray-200 px-4 py-4 outline-none"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <select className="rounded-2xl border border-gray-200 px-4 py-4 outline-none">
+              <option>Property Type</option>
+              <option>Condo</option>
+              <option>Apartment</option>
+              <option>Villa</option>
+              <option>House</option>
+            </select>
+
+            <select className="rounded-2xl border border-gray-200 px-4 py-4 outline-none">
+              <option>Price Range</option>
+              <option>฿10,000 - ฿20,000</option>
+              <option>฿20,000 - ฿50,000</option>
+              <option>฿50,000+</option>
+            </select>
+
+            <Link
+              href="/properties"
+              className="rounded-2xl bg-black px-5 py-4 text-center font-semibold text-white transition hover:bg-gray-800"
+            >
+              Search
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">
+                Featured Listings
+              </p>
+
+              <h2 className="mt-3 text-4xl font-bold text-gray-900">
+                Featured Properties in Thailand
+              </h2>
+
+              <p className="mt-3 max-w-2xl text-gray-600">
+                Browse verified condos, apartments, and villas from real agents.
+              </p>
+            </div>
+
+            <Link
+              href="/properties"
+              className="rounded-full border border-gray-300 px-6 py-3 text-sm font-semibold transition hover:bg-white"
+            >
+              View All
+            </Link>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {featuredProperties.map((property: any) => (
+              <PropertyCard
+                key={property.id}
+                id={property.id}
+                title={property.title}
+                price={property.price}
+                township={property.township}
+                propertyType={property.propertyType}
+                bedrooms={property.bedrooms}
+                bathrooms={property.bathrooms}
+                image={property.images?.[0]?.imageUrl}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
