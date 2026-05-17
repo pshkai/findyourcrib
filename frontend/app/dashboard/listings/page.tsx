@@ -32,21 +32,40 @@ export default async function MyListingsPage() {
         </Link>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {properties.map((property: any) => (
-          <PropertyCard
-            key={property.id}
-            id={property.id}
-            title={property.title}
-            price={property.price}
-            township={property.township}
-            propertyType={property.propertyType}
-            bedrooms={property.bedrooms}
-            bathrooms={property.bathrooms}
-            image={property.images?.[0]?.imageUrl}
-          />
-        ))}
-      </div>
+      {properties.length === 0 ? (
+        <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm">
+          <h2 className="text-2xl font-bold text-gray-900">
+            No listings yet
+          </h2>
+
+          <p className="mt-3 text-gray-600">
+            Start by creating your first property listing.
+          </p>
+
+          <Link
+            href="/dashboard/properties/create"
+            className="mt-6 inline-block rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
+          >
+            Create Property
+          </Link>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {properties.map((property: any) => (
+            <PropertyCard
+              key={property.id}
+              id={property.id}
+              title={property.title}
+              price={property.price}
+              township={property.township}
+              propertyType={property.propertyType}
+              bedrooms={property.bedrooms}
+              bathrooms={property.bathrooms}
+              image={property.images?.[0]?.imageUrl}
+            />
+          ))}
+        </div>
+      )}
     </DashboardLayout>
   );
 }
