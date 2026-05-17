@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
+
+import Navbar from "@/components/layout/Navbar";
+
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -24,8 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${jakarta.variable} ${playfair.variable} font-sans`}>
-        {children}
+      <body
+        className={`${jakarta.variable} ${playfair.variable} font-sans bg-white text-gray-900`}
+      >
+        <Navbar />
+
+        <main>{children}</main>
       </body>
     </html>
   );
