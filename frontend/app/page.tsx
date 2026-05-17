@@ -62,12 +62,6 @@ export default async function Home() {
           <div className="relative rounded-[2.5rem] bg-white p-4 shadow-2xl">
             <div className="h-[460px] rounded-[2rem] bg-[url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85')] bg-cover bg-center" />
 
-            <div className="absolute -bottom-6 left-8 rounded-3xl bg-white p-6 shadow-xl">
-              <p className="text-sm text-gray-500">Starting from</p>
-              <h3 className="mt-1 text-2xl font-bold text-gray-900">
-                ฿12,000/mo
-              </h3>
-            </div>
           </div>
         </div>
       </section>

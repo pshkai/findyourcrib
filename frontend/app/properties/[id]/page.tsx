@@ -80,7 +80,7 @@ export default async function PropertyDetailsPage({ params }: PageProps) {
           <p className="text-sm text-gray-500">Monthly Rent</p>
 
           <h2 className="mt-2 text-4xl font-bold text-gray-900">
-            ฿{property.price.toLocaleString()}
+            ฿{property.price.toLocaleString()}/m
           </h2>
 
           {property.nearestStation && (
@@ -100,9 +100,44 @@ export default async function PropertyDetailsPage({ params }: PageProps) {
             <p className="text-sm text-gray-500">{property.agent?.email}</p>
           </div>
 
-          <button className="mt-8 w-full rounded-full bg-black px-6 py-4 font-semibold text-white transition hover:bg-gray-800">
-            Send Inquiry
-          </button>
+          <div className="mt-8 border-t border-gray-200 pt-6">
+            <h3 className="text-xl font-bold text-gray-900">
+              Send Inquiry
+            </h3>
+
+            <form className="mt-5 grid gap-4">
+              <input
+                type="text"
+                placeholder="Your name"
+                className="rounded-2xl border border-gray-200 px-4 py-3 outline-none"
+              />
+
+              <input
+                type="email"
+                placeholder="Email address"
+                className="rounded-2xl border border-gray-200 px-4 py-3 outline-none"
+              />
+
+              <input
+                type="text"
+                placeholder="Phone number"
+                className="rounded-2xl border border-gray-200 px-4 py-3 outline-none"
+              />
+
+              <textarea
+                placeholder="Message"
+                rows={4}
+                className="resize-none rounded-2xl border border-gray-200 px-4 py-3 outline-none"
+              />
+
+              <button
+                type="button"
+                className="rounded-full bg-black px-6 py-4 font-semibold text-white transition hover:bg-gray-800"
+              >
+                Send Inquiry
+              </button>
+            </form>
+          </div>
         </aside>
       </div>
     </main>

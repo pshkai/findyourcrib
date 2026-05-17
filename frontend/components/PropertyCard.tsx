@@ -47,7 +47,7 @@ export default function PropertyCard({
 
         <div className="mt-6 flex items-center justify-between gap-4">
           <p className="text-xl font-bold text-gray-900">
-            ฿{price.toLocaleString()}/mo
+            ฿{price.toLocaleString()}/month
           </p>
 
           <Link
