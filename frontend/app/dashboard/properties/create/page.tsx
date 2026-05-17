@@ -17,73 +17,138 @@ export default function CreatePropertyPage() {
         </p>
       </div>
 
-      <div className="max-w-4xl rounded-[2rem] bg-white p-8 shadow-sm">
-        <form className="grid gap-5">
-          <input
-            type="text"
-            placeholder="Property title"
-            className="rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-          />
-
-          <textarea
-            placeholder="Property description"
-            rows={5}
-            className="resize-none rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-          />
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <input
-              type="number"
-              placeholder="Monthly price in THB"
-              className="rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-            />
-
-            <select className="rounded-2xl border border-gray-200 px-4 py-4 outline-none">
-              <option>Property Type</option>
-              <option>CONDO</option>
-              <option>APARTMENT</option>
-              <option>VILLA</option>
-              <option>HOUSE</option>
-            </select>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-3">
-            <input
-              type="number"
-              placeholder="Bedrooms"
-              className="rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-            />
-
-            <input
-              type="number"
-              placeholder="Bathrooms"
-              className="rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-            />
-
-            <input
-              type="number"
-              placeholder="Size sqm"
-              className="rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-            />
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <input
-              type="text"
-              placeholder="City / Township"
-              className="rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-            />
+      <div className="max-w-5xl rounded-[2rem] bg-white p-8 shadow-sm">
+        <form className="grid gap-8">
+          <div>
+            <label className="mb-3 block text-sm font-semibold text-gray-700">
+              Property Title
+            </label>
 
             <input
               type="text"
-              placeholder="Address"
-              className="rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+              placeholder="Modern condo near BTS"
+              className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
             />
+          </div>
+
+          <div>
+            <label className="mb-3 block text-sm font-semibold text-gray-700">
+              Description
+            </label>
+
+            <textarea
+              placeholder="Describe the property..."
+              rows={6}
+              className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+            />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label className="mb-3 block text-sm font-semibold text-gray-700">
+                Monthly Price
+              </label>
+
+              <input
+                type="number"
+                placeholder="25000"
+                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="mb-3 block text-sm font-semibold text-gray-700">
+                Property Type
+              </label>
+
+              <select className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none">
+                <option>CONDO</option>
+                <option>APARTMENT</option>
+                <option>VILLA</option>
+                <option>HOUSE</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <div>
+              <label className="mb-3 block text-sm font-semibold text-gray-700">
+                Bedrooms
+              </label>
+
+              <input
+                type="number"
+                placeholder="2"
+                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="mb-3 block text-sm font-semibold text-gray-700">
+                Bathrooms
+              </label>
+
+              <input
+                type="number"
+                placeholder="2"
+                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="mb-3 block text-sm font-semibold text-gray-700">
+                Size (sqm)
+              </label>
+
+              <input
+                type="number"
+                placeholder="65"
+                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label className="mb-3 block text-sm font-semibold text-gray-700">
+                Township / City
+              </label>
+
+              <input
+                type="text"
+                placeholder="Bangkok"
+                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="mb-3 block text-sm font-semibold text-gray-700">
+                Full Address
+              </label>
+
+              <input
+                type="text"
+                placeholder="สุขุมวิท 24"
+                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-3 block text-sm font-semibold text-gray-700">
+              Upload Images
+            </label>
+
+            <div className="rounded-[2rem] border-2 border-dashed border-gray-300 p-10 text-center">
+              <p className="text-gray-500">
+                Image upload integration coming soon
+              </p>
+            </div>
           </div>
 
           <button
             type="button"
-            className="mt-4 rounded-full bg-black px-7 py-4 font-semibold text-white transition hover:bg-gray-800"
+            className="w-fit rounded-full bg-black px-8 py-4 font-semibold text-white transition hover:bg-gray-800"
           >
             Create Property
           </button>

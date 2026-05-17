@@ -22,23 +22,27 @@ export default function PropertyCard({
   image,
 }: PropertyCardProps) {
   return (
-    <div className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+    <div className="group overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div
-        className="h-64 bg-cover bg-center"
+        className="relative h-64 bg-cover bg-center"
         style={{
           backgroundImage: `url(${
             image ||
             "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"
           })`,
         }}
-      />
+      >
+        <div className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-xs font-semibold text-gray-900 shadow-sm">
+          {propertyType}
+        </div>
+      </div>
 
       <div className="p-6">
-        <p className="text-sm font-medium text-blue-600">{propertyType}</p>
+        <p className="text-sm font-medium text-gray-500">{township}</p>
 
-        <h3 className="mt-2 text-2xl font-bold text-gray-900">{title}</h3>
-
-        <p className="mt-2 text-gray-600">{township}</p>
+        <h3 className="mt-2 line-clamp-1 text-2xl font-bold text-gray-900">
+          {title}
+        </h3>
 
         <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
           <span>{bedrooms} Beds</span>
@@ -47,7 +51,7 @@ export default function PropertyCard({
 
         <div className="mt-6 flex items-center justify-between gap-4">
           <p className="text-xl font-bold text-gray-900">
-            ฿{price.toLocaleString()}/month
+            ฿{price.toLocaleString()}/m
           </p>
 
           <Link

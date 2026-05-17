@@ -70,21 +70,33 @@ export default async function PropertiesPage() {
               </select>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {properties.map((property: any) => (
-                <PropertyCard
-                  key={property.id}
-                  id={property.id}
-                  title={property.title}
-                  price={property.price}
-                  township={property.township}
-                  propertyType={property.propertyType}
-                  bedrooms={property.bedrooms}
-                  bathrooms={property.bathrooms}
-                  image={property.images?.[0]?.imageUrl}
-                />
-              ))}
-            </div>
+            {properties.length === 0 ? (
+  <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm">
+    <h2 className="text-2xl font-bold text-gray-900">
+      No properties found
+    </h2>
+
+    <p className="mt-3 text-gray-600">
+      Please check back later for new property listings.
+    </p>
+  </div>
+) : (
+  <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    {properties.map((property: any) => (
+      <PropertyCard
+        key={property.id}
+        id={property.id}
+        title={property.title}
+        price={property.price}
+        township={property.township}
+        propertyType={property.propertyType}
+        bedrooms={property.bedrooms}
+        bathrooms={property.bathrooms}
+        image={property.images?.[0]?.imageUrl}
+      />
+    ))}
+  </div>
+)}
           </div>
         </div>
       </div>
