@@ -25,3 +25,238 @@ export async function getPropertyById(id: string) {
 
   return response.json();
 }
+
+export async function createInquiry(
+  propertyId: string,
+  inquiryData: {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+  }
+) {
+  const response = await fetch(`${API_URL}/inquiries/${propertyId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(inquiryData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to send inquiry");
+  }
+
+  return data;
+}
+
+export async function registerUser(registerData: {
+  name: string;
+  email: string;
+  password: string;
+  role: "CUSTOMER" | "AGENT";
+}) {
+  const response = await fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(registerData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Registration failed");
+  }
+
+  return data;
+}
+
+export async function loginUser(loginData: {
+  email: string;
+  password: string;
+}) {
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(loginData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Login failed");
+  }
+
+  return data;
+}
+
+export async function getMyDashboard(token: string) {
+  const response = await fetch(`${API_URL}/properties/me/dashboard`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch dashboard");
+  }
+
+  return data;
+}
+
+export async function getMyListings(token: string) {
+  const response = await fetch(`${API_URL}/properties/me/listings`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch listings");
+  }
+
+  return data;
+}
+
+export async function createProperty(
+  token: string,
+  propertyData: {
+    title: string;
+    description: string;
+    price: number;
+    propertyType: string;
+    bedrooms: number;
+    bathrooms: number;
+    sizeSqm: number;
+    address: string;
+    township: string;
+    nearestStation: string;
+    distanceToStation: number;
+  }
+) {
+  const response = await fetch(`${API_URL}/properties`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(propertyData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create property");
+  }
+
+  return data;
+}
+
+export async function getFavorites(token: string) {
+  const response = await fetch(`${API_URL}/favorites`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch favorites");
+  }
+
+  return data;
+}
+
+export async function addFavorite(token: string, propertyId: number) {
+  const response = await fetch(`${API_URL}/favorites/${propertyId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to add favorite");
+  }
+
+  return data;
+}
+
+export async function removeFavorite(token: string, propertyId: number) {
+  const response = await fetch(`${API_URL}/favorites/${propertyId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to remove favorite");
+  }
+
+  return data;
+} 
+export async function uploadPropertyImage(
+  token: string,
+  propertyId: number,
+  file: File
+) {
+  const formData = new FormData();
+
+  formData.append("image", file);
+
+  const response = await fetch(`${API_URL}/properties/${propertyId}/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to upload image");
+  }
+
+  return data;
+}
+export async function deleteProperty(
+  token: string,
+  propertyId: number
+) {
+  const response = await fetch(
+    `${API_URL}/properties/${propertyId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(
+      data.message || "Failed to delete property"
+    );
+  }
+
+  return true;
+}

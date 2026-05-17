@@ -1,68 +1,104 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect, useState } from "react";
 
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import PropertyCard from "@/components/PropertyCard";
-import { getProperties } from "@/lib/api";
+import UploadPropertyImage from "@/components/dashboard/UploadPropertyImage";
+import DeletePropertyButton from "@/components/dashboard/DeletePropertyButton";
+import { getMyListings } from "@/lib/api";
 
-export default async function MyListingsPage() {
-  const properties = await getProperties();
+export default function MyListingsPage() {
+  const [listings, setListings] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function loadListings() {
+    try {
+      setIsLoading(true);
+      setErrorMessage("");
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setErrorMessage("Please login to view your listings.");
+        return;
+      }
+
+      const data = await getMyListings(token);
+      setListings(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Failed to load listings.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadListings();
+  }, []);
 
   return (
     <DashboardLayout>
-      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">
-            Dashboard
-          </p>
+      <DashboardHeader
+        title="My Listings"
+        description="Manage all properties you have created."
+      />
 
-          <h1 className="mt-3 text-5xl font-bold text-gray-900">
-            My Listings
-          </h1>
-
-          <p className="mt-4 text-gray-600">
-            View and manage your property listings.
-          </p>
+      {isLoading && (
+        <div className="rounded-3xl bg-white p-8 shadow-sm">
+          Loading listings...
         </div>
+      )}
 
-        <Link
-          href="/dashboard/properties/create"
-          className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
-        >
-          Add Property
-        </Link>
-      </div>
-
-      {properties.length === 0 ? (
-        <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm">
-          <h2 className="text-2xl font-bold text-gray-900">
-            No listings yet
-          </h2>
-
-          <p className="mt-3 text-gray-600">
-            Start by creating your first property listing.
-          </p>
-
-          <Link
-            href="/dashboard/properties/create"
-            className="mt-6 inline-block rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
-          >
-            Create Property
-          </Link>
+      {errorMessage && (
+        <div className="rounded-3xl bg-red-50 p-8 text-red-700">
+          {errorMessage}
         </div>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {properties.map((property: any) => (
-            <PropertyCard
-              key={property.id}
-              id={property.id}
-              title={property.title}
-              price={property.price}
-              township={property.township}
-              propertyType={property.propertyType}
-              bedrooms={property.bedrooms}
-              bathrooms={property.bathrooms}
-              image={property.images?.[0]?.imageUrl}
-            />
+      )}
+
+      {!isLoading && !errorMessage && listings.length === 0 && (
+        <div className="rounded-3xl bg-white p-8 shadow-sm">
+          You do not have any listings yet.
+        </div>
+      )}
+
+      {!isLoading && !errorMessage && listings.length > 0 && (
+        <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
+          {listings.map((property: any) => (
+            <div key={property.id} className="space-y-4">
+              <PropertyCard
+                id={property.id}
+                image={
+                  property.images?.[0]?.imageUrl ||
+                  "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"
+                }
+                title={property.title}
+                price={`฿${property.price.toLocaleString()}/month`}
+                township={property.township}
+                bedrooms={property.bedrooms}
+                bathrooms={property.bathrooms}
+                propertyType={property.propertyType}
+                availability={
+                  property.status === "AVAILABLE" ? "Available" : "Rented"
+                }
+              />
+
+              <UploadPropertyImage
+                propertyId={property.id}
+                onUploadSuccess={loadListings}
+              />
+
+              <DeletePropertyButton
+                propertyId={property.id}
+                onDeleteSuccess={loadListings}
+              />
+            </div>
           ))}
         </div>
       )}

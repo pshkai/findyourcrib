@@ -1,157 +1,226 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { Button } from "@/components/ui/button";
+import { createProperty } from "@/lib/api";
 
 export default function CreatePropertyPage() {
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    price: "",
+    propertyType: "CONDO",
+    bedrooms: "",
+    bathrooms: "",
+    sizeSqm: "",
+    address: "",
+    township: "",
+    nearestStation: "",
+    distanceToStation: "",
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  function handleChange(
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setIsLoading(true);
+    setErrorMessage("");
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setErrorMessage("Please login before creating a property.");
+        return;
+      }
+
+      await createProperty(token, {
+        title: formData.title,
+        description: formData.description,
+        price: Number(formData.price),
+        propertyType: formData.propertyType,
+        bedrooms: Number(formData.bedrooms),
+        bathrooms: Number(formData.bathrooms),
+        sizeSqm: Number(formData.sizeSqm),
+        address: formData.address,
+        township: formData.township,
+        nearestStation: formData.nearestStation,
+        distanceToStation: Number(formData.distanceToStation),
+      });
+
+      router.push("/dashboard/listings");
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Failed to create property.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <DashboardLayout>
-      <div className="mb-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">
-          Dashboard
-        </p>
+      <DashboardHeader
+        title="Add New Property"
+        description="Create a new Thailand property listing for renters to discover."
+      />
 
-        <h1 className="mt-3 text-5xl font-bold text-gray-900">
-          Create Property
-        </h1>
+      <div className="max-w-4xl rounded-3xl bg-white p-8 shadow-sm">
+        <form onSubmit={handleSubmit} className="grid gap-5">
+          <input
+            name="title"
+            type="text"
+            placeholder="Property title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
+          />
 
-        <p className="mt-4 text-gray-600">
-          Add a new rental listing to FYC.
-        </p>
-      </div>
+          <textarea
+            name="description"
+            placeholder="Property description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+            rows={4}
+            className="resize-none rounded-xl border border-gray-200 px-4 py-3 outline-none"
+          />
 
-      <div className="max-w-5xl rounded-[2rem] bg-white p-8 shadow-sm">
-        <form className="grid gap-8">
-          <div>
-            <label className="mb-3 block text-sm font-semibold text-gray-700">
-              Property Title
-            </label>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <input
+              name="price"
+              type="number"
+              placeholder="Monthly price in THB"
+              value={formData.price}
+              onChange={handleChange}
+              required
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
+            />
+
+            <select
+              name="propertyType"
+              value={formData.propertyType}
+              onChange={handleChange}
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
+            >
+              <option value="CONDO">Condo</option>
+              <option value="APARTMENT">Apartment</option>
+              <option value="VILLA">Villa</option>
+              <option value="HOUSE">House</option>
+            </select>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-3">
+            <input
+              name="bedrooms"
+              type="number"
+              placeholder="Bedrooms"
+              value={formData.bedrooms}
+              onChange={handleChange}
+              required
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
+            />
 
             <input
+              name="bathrooms"
+              type="number"
+              placeholder="Bathrooms"
+              value={formData.bathrooms}
+              onChange={handleChange}
+              required
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
+            />
+
+            <input
+              name="sizeSqm"
+              type="number"
+              placeholder="Size sqm"
+              value={formData.sizeSqm}
+              onChange={handleChange}
+              required
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
+            />
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <input
+              name="township"
               type="text"
-              placeholder="Modern condo near BTS"
-              className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+              placeholder="City / township e.g. Bangkok"
+              value={formData.township}
+              onChange={handleChange}
+              required
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
+            />
+
+            <input
+              name="address"
+              type="text"
+              placeholder="Address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
             />
           </div>
 
-          <div>
-            <label className="mb-3 block text-sm font-semibold text-gray-700">
-              Description
-            </label>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <input
+              name="nearestStation"
+              type="text"
+              placeholder="Nearest station e.g. BTS Asok"
+              value={formData.nearestStation}
+              onChange={handleChange}
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
+            />
 
-            <textarea
-              placeholder="Describe the property..."
-              rows={6}
-              className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-4 outline-none"
+            <input
+              name="distanceToStation"
+              type="number"
+              step="0.1"
+              placeholder="Distance to station km"
+              value={formData.distanceToStation}
+              onChange={handleChange}
+              className="rounded-xl border border-gray-200 px-4 py-3 outline-none"
             />
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label className="mb-3 block text-sm font-semibold text-gray-700">
-                Monthly Price
-              </label>
+          {errorMessage && (
+            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              {errorMessage}
+            </p>
+          )}
 
-              <input
-                type="number"
-                placeholder="25000"
-                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="mb-3 block text-sm font-semibold text-gray-700">
-                Property Type
-              </label>
-
-              <select className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none">
-                <option>CONDO</option>
-                <option>APARTMENT</option>
-                <option>VILLA</option>
-                <option>HOUSE</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            <div>
-              <label className="mb-3 block text-sm font-semibold text-gray-700">
-                Bedrooms
-              </label>
-
-              <input
-                type="number"
-                placeholder="2"
-                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="mb-3 block text-sm font-semibold text-gray-700">
-                Bathrooms
-              </label>
-
-              <input
-                type="number"
-                placeholder="2"
-                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="mb-3 block text-sm font-semibold text-gray-700">
-                Size (sqm)
-              </label>
-
-              <input
-                type="number"
-                placeholder="65"
-                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label className="mb-3 block text-sm font-semibold text-gray-700">
-                Township / City
-              </label>
-
-              <input
-                type="text"
-                placeholder="Bangkok"
-                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="mb-3 block text-sm font-semibold text-gray-700">
-                Full Address
-              </label>
-
-              <input
-                type="text"
-                placeholder="สุขุมวิท 24"
-                className="w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-3 block text-sm font-semibold text-gray-700">
-              Upload Images
-            </label>
-
-            <div className="rounded-[2rem] border-2 border-dashed border-gray-300 p-10 text-center">
-              <p className="text-gray-500">
-                Image upload integration coming soon
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            className="w-fit rounded-full bg-black px-8 py-4 font-semibold text-white transition hover:bg-gray-800"
+          <Button
+            type="submit"
+            disabled={isLoading}
+            size="lg"
+            className="rounded-2xl bg-black text-white hover:bg-gray-800"
           >
-            Create Property
-          </button>
+            {isLoading ? "Creating..." : "Create Property"}
+          </Button>
         </form>
       </div>
     </DashboardLayout>
