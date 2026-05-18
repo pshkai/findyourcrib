@@ -1,0 +1,20 @@
+[33m84ef554[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend-clean-ui[m[33m)[m HEAD@{0}: rebase (finish): returning to refs/heads/frontend-clean-ui
+[33m84ef554[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend-clean-ui[m[33m)[m HEAD@{1}: rebase (pick): Fix layout filename casing
+[33m23d6dc5[m HEAD@{2}: rebase (pick): Fix merge cleanup and stabilize clean frontend UI
+[33m182936a[m HEAD@{3}: commit (amend): Merge branch 'main' into frontend-clean-ui
+[33ma751fc5[m[33m ([m[1;31morigin/frontend-clean-ui[m[33m)[m HEAD@{4}: pull origin frontend-clean-ui --rebase (start): checkout a751fc512d4e68af37f10dcc24a1a051842bdafe
+[33m602fb65[m HEAD@{5}: commit: Fix layout filename casing
+[33mef199a6[m HEAD@{6}: commit: Fix merge cleanup and stabilize clean frontend UI
+[33m5e6cd01[m HEAD@{7}: commit (merge): Merge main while keeping clean frontend UI
+[33mc968e1e[m HEAD@{8}: commit: Fix dashboard routing structure
+[33m182eb32[m HEAD@{9}: commit: Polish property cards and dashboard create form
+[33m472d5cd[m HEAD@{10}: commit: Polish frontend UI and property pages
+[33m93fb507[m HEAD@{11}: commit: Polish homepage and dashboard UI
+[33m9b6935f[m HEAD@{12}: commit: Build clean dashboard UI foundation
+[33m336eedf[m HEAD@{13}: commit: Rebuild clean frontend foundation and property pages
+[33md5f50a6[m HEAD@{14}: commit: Restore clean layout and typography
+[33m3d29600[m HEAD@{15}: commit: Clear feature message
+[33m64d8abc[m[33m ([m[1;31morigin/feature/geolocation-search[m[33m)[m HEAD@{16}: checkout: moving from frontend-ui-integration to frontend-clean-ui
+[33m39a3f9d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mfrontend-ui-integration[m[33m)[m HEAD@{17}: checkout: moving from main to frontend-ui-integration
+[33m39a3f9d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mfrontend-ui-integration[m[33m)[m HEAD@{18}: checkout: moving from frontend-ui-integration to main
+[33m39a3f9d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mfrontend-ui-integration[m[33m)[m HEAD@{19}: checkout: moving from main to frontend-ui-integration

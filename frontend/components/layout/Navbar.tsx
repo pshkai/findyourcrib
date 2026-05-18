@@ -16,24 +16,32 @@ export default function Navbar() {
           FYC
         </Link>
 
+        {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 md:flex">
           <Link
             href="/"
-            className="text-sm font-medium text-gray-700 hover:text-black"
+            className="text-sm font-medium text-gray-700 transition hover:text-black"
           >
             Home
           </Link>
 
           <Link
             href="/properties"
-            className="text-sm font-medium text-gray-700 hover:text-black"
+            className="text-sm font-medium text-gray-700 transition hover:text-black"
           >
             Properties
           </Link>
 
           <Link
+            href="/dashboard"
+            className="text-sm font-medium text-gray-700 transition hover:text-black"
+          >
+            Dashboard
+          </Link>
+
+          <Link
             href="/login"
-            className="text-sm font-medium text-gray-700 hover:text-black"
+            className="text-sm font-medium text-gray-700 transition hover:text-black"
           >
             Login
           </Link>
@@ -46,6 +54,7 @@ export default function Navbar() {
           </Link>
         </nav>
 
+        {/* Mobile Button */}
         <button
           onClick={() => setOpen(!open)}
           className="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 md:hidden"
@@ -54,6 +63,7 @@ export default function Navbar() {
         </button>
       </div>
 
+      {/* Mobile Nav */}
       {open && (
         <div className="border-t border-gray-200 bg-white md:hidden">
           <div className="flex flex-col gap-2 p-4">
@@ -72,6 +82,13 @@ export default function Navbar() {
             </Link>
 
             <Link
+              href="/dashboard"
+              className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100"
+            >
+              Dashboard
+            </Link>
+
+            <Link
               href="/login"
               className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100"
             >
@@ -80,7 +97,7 @@ export default function Navbar() {
 
             <Link
               href="/register"
-              className="rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white"
+              className="rounded-xl bg-black px-4 py-3 text-center text-sm font-semibold text-white"
             >
               Register
             </Link>
