@@ -25,3 +25,47 @@ export async function getPropertyById(id: string) {
 
   return response.json();
 }
+
+export async function registerUser(registerData: {
+  name: string;
+  email: string;
+  password: string;
+  role: "CUSTOMER" | "AGENT";
+}) {
+  const response = await fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(registerData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Registration failed");
+  }
+
+  return data;
+}
+
+export async function loginUser(loginData: {
+  email: string;
+  password: string;
+}) {
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(loginData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Login failed");
+  }
+
+  return data;
+}
