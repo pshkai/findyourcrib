@@ -45,3 +45,10 @@ Seeded users share the password `Password123!`:
 - `admin@findyourcrib.test`
 - `agent@findyourcrib.test`
 - `renter@findyourcrib.test`
+
+## Deployment Notes
+
+- Vercel should build the frontend with `npm run build --workspace frontend`.
+- Render should build the backend with `npm run build --workspace backend` and start it with `npm run start:prod --workspace backend`.
+- Set `NEXT_PUBLIC_API_URL` in Vercel to the Render backend URL plus `/api/v1`.
+- Set `FRONTEND_URL` in Render to the Vercel frontend URL.

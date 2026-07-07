@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: findyourcrib-api
+    runtime: node
+    rootDir: .
+    plan: free
+    buildCommand: npm install && npm run build --workspace backend
+    startCommand: npm run start:prod --workspace backend
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.0
+      - key: FRONTEND_URL
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true

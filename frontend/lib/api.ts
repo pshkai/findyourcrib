@@ -2,6 +2,7 @@ import type { PropertySearchParams, PropertySummary, PropertyType } from "@findy
 import { featuredProperties } from "./mock-data";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
+const API_TIMEOUT_MS = 3500;
 
 interface ApiEnvelope<T> {
   data: T;
@@ -48,10 +49,20 @@ function buildUrl(path: string, params?: Record<string, string | number | undefi
 }
 
 async function request<T>(path: string, params?: Record<string, string | number | undefined>) {
-  const response = await fetch(buildUrl(path, params), {
-    cache: "no-store",
-    headers: { Accept: "application/json" }
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
+  let response: Response;
+
+  try {
+    response = await fetch(buildUrl(path, params), {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+      signal: controller.signal
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status}`);
