@@ -12,16 +12,27 @@ interface ApiEnvelope<T> {
 interface ApiProperty {
   id: string;
   title: string;
+  description?: string;
   price: string | number;
   currency?: "THB";
+  address?: string;
   township: string;
   province: string;
   propertyType: PropertyType;
   bedrooms: number | null;
   bathrooms: number | null;
   sizeSqm: string | number | null;
+  latitude?: string | number | null;
+  longitude?: string | number | null;
+  nearestStation?: string | null;
+  distanceToStation?: string | number | null;
   verificationStatus?: "PENDING" | "VERIFIED" | "REJECTED";
-  images?: Array<{ imageUrl: string; displayOrder?: number | null }>;
+  images?: Array<{ imageUrl: string; altText?: string | null; displayOrder?: number | null }>;
+  agent?: {
+    id: string;
+    name: string;
+    phoneNumber: string | null;
+  };
 }
 
 function buildUrl(path: string, params?: Record<string, string | number | undefined>) {
@@ -74,6 +85,35 @@ function mapProperty(property: ApiProperty): PropertySummary {
   };
 }
 
+export interface PropertyDetail extends PropertySummary {
+  description: string;
+  address: string;
+  latitude: number | null;
+  longitude: number | null;
+  nearestStation: string | null;
+  distanceToStation: number | null;
+  images: Array<{ imageUrl: string; altText: string | null }>;
+  agent: {
+    id: string;
+    name: string;
+    phoneNumber: string | null;
+  } | null;
+}
+
+function mapPropertyDetail(property: ApiProperty): PropertyDetail {
+  return {
+    ...mapProperty(property),
+    description: property.description ?? "",
+    address: property.address ?? "",
+    latitude: toNumber(property.latitude),
+    longitude: toNumber(property.longitude),
+    nearestStation: property.nearestStation ?? null,
+    distanceToStation: toNumber(property.distanceToStation),
+    images: property.images?.map((image) => ({ imageUrl: image.imageUrl, altText: image.altText ?? null })) ?? [],
+    agent: property.agent ?? null
+  };
+}
+
 export async function getFeaturedProperties() {
   try {
     const envelope = await request<ApiProperty[]>("/properties/featured");
@@ -105,6 +145,30 @@ export async function searchProperties(params: PropertySearchParams) {
     return {
       properties: featuredProperties,
       meta: { fallback: true }
+    };
+  }
+}
+
+export async function getPropertyDetail(id: string) {
+  const fallback = featuredProperties.find((property) => property.id === id) ?? featuredProperties[0];
+
+  try {
+    const envelope = await request<ApiProperty>(`/properties/${id}`);
+    return { property: mapPropertyDetail(envelope.data), isFallback: false };
+  } catch {
+    return {
+      property: {
+        ...fallback,
+        description: "Demo listing shown while the backend API is not running.",
+        address: `${fallback.township}, ${fallback.province}`,
+        latitude: null,
+        longitude: null,
+        nearestStation: null,
+        distanceToStation: null,
+        images: fallback.coverImageUrl ? [{ imageUrl: fallback.coverImageUrl, altText: fallback.title }] : [],
+        agent: { id: "demo-agent", name: "Demo Agent", phoneNumber: null }
+      },
+      isFallback: true
     };
   }
 }

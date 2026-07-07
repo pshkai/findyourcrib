@@ -44,6 +44,9 @@ export function PropertyCard({ property }: { property: PropertySummary }) {
             {property.sizeSqm ?? "-"} sqm
           </span>
         </div>
+        <a className="property-link" href={`/properties/${property.id}`}>
+          View details
+        </a>
       </div>
     </article>
   );
