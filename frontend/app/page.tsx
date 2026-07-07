@@ -1,6 +1,6 @@
 import { Building2, MapPinned, ShieldCheck, SlidersHorizontal, Sparkles, Search } from "lucide-react";
 import { PropertyCard } from "../components/property-card";
-import { ThemeToggle } from "../components/theme-toggle";
+import { SiteHeader } from "../components/site-header";
 import { getFeaturedProperties } from "../lib/api";
 import "./page.css";
 
@@ -9,20 +9,7 @@ export default async function Home() {
 
   return (
     <main>
-      <header className="topbar">
-        <div className="page-shell nav">
-          <a className="brand" href="/">
-            <span>FYC</span>
-            <strong>FindYourCrib</strong>
-          </a>
-          <nav aria-label="Main navigation">
-            <a href="/properties">Browse</a>
-            <a href="/dashboard">Dashboard</a>
-            <a href="/login">Login</a>
-            <ThemeToggle />
-          </nav>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="search-band">
         <div className="hero-grid" aria-hidden="true">

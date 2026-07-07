@@ -1,5 +1,6 @@
 import { Bath, BedDouble, CheckCircle2, MapPin, Ruler, TrainFront } from "lucide-react";
 import { InquiryForm } from "../../../components/inquiry-form";
+import { SiteHeader } from "../../../components/site-header";
 import { getPropertyDetail } from "../../../lib/api";
 import "../../page.css";
 
@@ -20,6 +21,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
   return (
     <main className="property-detail-page">
+      <SiteHeader />
       <section className="property-hero" style={{ backgroundImage: heroImage ? `url(${heroImage})` : undefined }}>
         <div className="page-shell property-hero-content">
           <a href="/properties">Browse properties</a>

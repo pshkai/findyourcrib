@@ -1,6 +1,8 @@
 import { PropertyCard } from "../../components/property-card";
+import { SiteHeader } from "../../components/site-header";
 import { searchProperties } from "../../lib/api";
 import type { PropertyType } from "@findyourcrib/shared";
+import "../page.css";
 
 interface PropertiesPageProps {
   searchParams: Promise<{
@@ -20,34 +22,39 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
   const isFallback = Boolean(meta.fallback);
 
   return (
-    <main className="page-shell results-page">
-      <section className="results-header">
-        <div>
-          <p>Search results</p>
-          <h1>Browse verified homes</h1>
+    <main>
+      <SiteHeader />
+      <section className="results-hero">
+        <div className="page-shell results-header">
+          <div>
+            <p>Search results</p>
+            <h1>Browse verified homes</h1>
+          </div>
+          {isFallback ? <span>Showing demo listings until the API is running</span> : <span>{properties.length} homes ready to compare</span>}
         </div>
-        {isFallback ? <span>Showing demo listings until the API is running</span> : null}
       </section>
 
-      <form className="results-filters" action="/properties">
-        <input name="query" placeholder="Location or keyword" defaultValue={params.query ?? ""} />
-        <select name="propertyType" defaultValue={params.propertyType ?? ""}>
-          <option value="">Any type</option>
-          <option value="CONDO">Condo</option>
-          <option value="APARTMENT">Apartment</option>
-          <option value="HOUSE">House</option>
-          <option value="VILLA">Villa</option>
-          <option value="SERVICED_APARTMENT">Serviced apartment</option>
-        </select>
-        <input name="maxPrice" placeholder="Max price" inputMode="numeric" defaultValue={params.maxPrice ?? ""} />
-        <button type="submit">Apply</button>
-      </form>
+      <section className="page-shell results-page">
+        <form className="results-filters" action="/properties">
+          <input name="query" placeholder="Location or keyword" defaultValue={params.query ?? ""} />
+          <select name="propertyType" defaultValue={params.propertyType ?? ""}>
+            <option value="">Any type</option>
+            <option value="CONDO">Condo</option>
+            <option value="APARTMENT">Apartment</option>
+            <option value="HOUSE">House</option>
+            <option value="VILLA">Villa</option>
+            <option value="SERVICED_APARTMENT">Serviced apartment</option>
+          </select>
+          <input name="maxPrice" placeholder="Max price" inputMode="numeric" defaultValue={params.maxPrice ?? ""} />
+          <button type="submit">Apply</button>
+        </form>
 
-      <div className="listing-grid" style={{ marginTop: 24 }}>
-        {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
-        ))}
-      </div>
+        <div className="listing-grid" style={{ marginTop: 24 }}>
+          {properties.map((property) => (
+            <PropertyCard key={property.id} property={property} />
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
