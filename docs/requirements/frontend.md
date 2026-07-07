@@ -23,3 +23,8 @@
 - `/dashboard/listings`: Agent listings.
 - `/dashboard/listings/new`: Create listing.
 - `/admin`: Admin review queue.
+
+## Current Implementation Status
+
+- Done: API-aware home featured listings, API-aware property search with demo fallback, login/register screens wired to auth endpoints, and dashboard navigation shell.
+- Next: authenticated dashboard data fetching, listing create/edit forms, favorites UI, property detail/inquiry page, and admin review UI.

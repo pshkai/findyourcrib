@@ -1,15 +1,50 @@
 import { PropertyCard } from "../../components/property-card";
-import { featuredProperties } from "../../lib/mock-data";
+import { searchProperties } from "../../lib/api";
+import type { PropertyType } from "@findyourcrib/shared";
 
-export default function PropertiesPage() {
+interface PropertiesPageProps {
+  searchParams: Promise<{
+    query?: string;
+    propertyType?: PropertyType;
+    maxPrice?: string;
+  }>;
+}
+
+export default async function PropertiesPage({ searchParams }: PropertiesPageProps) {
+  const params = await searchParams;
+  const { properties, meta } = await searchProperties({
+    query: params.query,
+    propertyType: params.propertyType,
+    maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined
+  });
+  const isFallback = Boolean(meta.fallback);
+
   return (
-    <main className="page-shell" style={{ paddingBottom: 64, paddingTop: 32 }}>
-      <h1>Browse properties</h1>
-      <p style={{ color: "var(--muted)", maxWidth: 680 }}>
-        This page will connect to `GET /api/v1/properties`. The first scaffold keeps the result UI available while backend data is wired in.
-      </p>
+    <main className="page-shell results-page">
+      <section className="results-header">
+        <div>
+          <p>Search results</p>
+          <h1>Browse verified homes</h1>
+        </div>
+        {isFallback ? <span>Showing demo listings until the API is running</span> : null}
+      </section>
+
+      <form className="results-filters" action="/properties">
+        <input name="query" placeholder="Location or keyword" defaultValue={params.query ?? ""} />
+        <select name="propertyType" defaultValue={params.propertyType ?? ""}>
+          <option value="">Any type</option>
+          <option value="CONDO">Condo</option>
+          <option value="APARTMENT">Apartment</option>
+          <option value="HOUSE">House</option>
+          <option value="VILLA">Villa</option>
+          <option value="SERVICED_APARTMENT">Serviced apartment</option>
+        </select>
+        <input name="maxPrice" placeholder="Max price" inputMode="numeric" defaultValue={params.maxPrice ?? ""} />
+        <button type="submit">Apply</button>
+      </form>
+
       <div className="listing-grid" style={{ marginTop: 24 }}>
-        {featuredProperties.map((property) => (
+        {properties.map((property) => (
           <PropertyCard key={property.id} property={property} />
         ))}
       </div>

@@ -1,9 +1,11 @@
 import { SlidersHorizontal, Search } from "lucide-react";
 import { PropertyCard } from "../components/property-card";
-import { featuredProperties } from "../lib/mock-data";
+import { getFeaturedProperties } from "../lib/api";
 import "./page.css";
 
-export default function Home() {
+export default async function Home() {
+  const properties = await getFeaturedProperties();
+
   return (
     <main>
       <header className="topbar">
@@ -23,10 +25,10 @@ export default function Home() {
             <h1>Find verified rental homes in Thailand</h1>
             <p>Search condos, apartments, houses, and villas with cleaner listings, real availability, and agent accountability.</p>
           </div>
-          <form className="search-panel">
+          <form className="search-panel" action="/properties">
             <label>
               Location
-              <input name="location" placeholder="Bangkok, Phuket, Chiang Mai" />
+              <input name="query" placeholder="Bangkok, Phuket, Chiang Mai" />
             </label>
             <label>
               Property type
@@ -46,7 +48,7 @@ export default function Home() {
               <Search size={18} />
               Search
             </button>
-            <button className="filter-button" type="button" aria-label="Open filters">
+            <button className="filter-button" type="button" aria-label="More filters">
               <SlidersHorizontal size={19} />
             </button>
           </form>
@@ -62,7 +64,7 @@ export default function Home() {
           <a href="/properties">View all</a>
         </div>
         <div className="listing-grid">
-          {featuredProperties.map((property) => (
+          {properties.map((property) => (
             <PropertyCard key={property.id} property={property} />
           ))}
         </div>
