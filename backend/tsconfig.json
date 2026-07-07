@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "outDir": "./dist",
+    "removeComments": true,
+    "strict": true,
+    "target": "ES2021"
+  },
+  "include": ["src/**/*.ts"]
+}

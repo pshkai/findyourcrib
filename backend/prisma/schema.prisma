@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  RENTER
+  AGENT
+  OWNER
+  ADMIN
+}
+
+enum PropertyStatus {
+  DRAFT
+  AVAILABLE
+  BOOKED
+  HIDDEN
+  EXPIRED
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum PropertyType {
+  CONDO
+  APARTMENT
+  HOUSE
+  VILLA
+  SERVICED_APARTMENT
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  phoneNumber  String?
+  role         UserRole   @default(RENTER)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  properties   Property[]
+  favorites    Favorite[]
+  inquiries    Inquiry[]
+
+  @@map("users")
+}
+
+model Property {
+  id                 String             @id @default(uuid())
+  title              String
+  description        String
+  price              Decimal            @db.Decimal(12, 2)
+  currency           String             @default("THB")
+  propertyType       PropertyType
+  bedrooms           Int?
+  bathrooms          Int?
+  sizeSqm            Decimal?           @db.Decimal(10, 2)
+  address            String
+  township           String
+  province           String
+  country            String             @default("Thailand")
+  latitude           Decimal?           @db.Decimal(9, 6)
+  longitude          Decimal?           @db.Decimal(9, 6)
+  nearestStation     String?
+  distanceToStation  Decimal?           @db.Decimal(8, 2)
+  status             PropertyStatus     @default(DRAFT)
+  verificationStatus VerificationStatus @default(PENDING)
+  isFeatured         Boolean            @default(false)
+  expiresAt          DateTime?
+  lastConfirmedAt    DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  agentId            String
+  agent              User               @relation(fields: [agentId], references: [id], onDelete: Restrict)
+  images             PropertyImage[]
+  amenities          PropertyAmenity[]
+  favorites          Favorite[]
+  inquiries          Inquiry[]
+
+  @@index([status, verificationStatus, createdAt])
+  @@index([township, province, propertyType])
+  @@index([price])
+  @@map("properties")
+}
+
+model PropertyImage {
+  id           String   @id @default(uuid())
+  imageUrl     String
+  altText      String?
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  propertyId   String
+  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, displayOrder])
+  @@map("property_images")
+}
+
+model Amenity {
+  id         String            @id @default(uuid())
+  name       String            @unique
+  properties PropertyAmenity[]
+
+  @@map("amenities")
+}
+
+model PropertyAmenity {
+  propertyId String
+  amenityId  String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  amenity    Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@id([propertyId, amenityId])
+  @@map("property_amenities")
+}
+
+model Favorite {
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, propertyId])
+  @@map("favorites")
+}
+
+model Inquiry {
+  id           String   @id @default(uuid())
+  message      String
+  contactName  String
+  contactEmail String
+  contactPhone String?
+  createdAt    DateTime @default(now())
+
+  propertyId   String
+  customerId   String?
+  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  customer     User?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@index([propertyId, createdAt])
+  @@map("inquiries")
+}
