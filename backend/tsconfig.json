@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "module": "commonjs",
-    "outDir": "./dist",
+    "outDir": "./dist/src",
     "removeComments": true,
     "strict": true,
     "target": "ES2021"
