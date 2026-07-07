@@ -28,6 +28,31 @@ export function clearAccessToken() {
   window.localStorage.removeItem(TOKEN_KEY);
 }
 
+export async function authorizedRequest<T>(path: string, init?: RequestInit) {
+  const token = getAccessToken();
+
+  if (!token) {
+    throw new Error("You need to login first");
+  }
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...init,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...init?.headers
+    }
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || `Request failed: ${response.status}`);
+  }
+
+  return (await response.json()) as T;
+}
+
 async function authRequest(path: string, payload: Record<string, unknown>) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
