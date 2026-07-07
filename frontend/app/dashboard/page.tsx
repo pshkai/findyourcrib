@@ -1,4 +1,5 @@
 import { Building2, Heart, Inbox, PlusCircle } from "lucide-react";
+import { DashboardShell } from "../../components/dashboard-shell";
 import "../page.css";
 
 const actions = [
@@ -10,11 +11,11 @@ const actions = [
 
 export default function DashboardPage() {
   return (
-    <main className="page-shell dashboard-page">
-      <section className="dashboard-header">
-        <p>Workspace</p>
-        <h1>Manage your FindYourCrib activity</h1>
-      </section>
+    <DashboardShell
+      active="overview"
+      title="Manage your FindYourCrib activity"
+      description="Create listings, follow renter interest, and keep saved homes close while the marketplace grows."
+    >
       <section className="dashboard-grid">
         {actions.map((action) => {
           const Icon = action.icon;
@@ -26,6 +27,6 @@ export default function DashboardPage() {
           );
         })}
       </section>
-    </main>
+    </DashboardShell>
   );
 }

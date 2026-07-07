@@ -17,9 +17,9 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
   const [isLoading, setLoading] = useState(true);
 
   const title = useMemo(() => {
-    if (kind === "listings") return "My listings";
+    if (kind === "listings") return "Listing inventory";
     if (kind === "inquiries") return "Inquiries";
-    return "Favorites";
+    return "Saved homes";
   }, [kind]);
 
   useEffect(() => {
@@ -67,10 +67,10 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
     <section className="dashboard-panel">
       <div className="dashboard-panel-header">
         <div>
-          <p>{kind}</p>
-          <h1>{title}</h1>
+          <p>Live data</p>
+          <h2>{title}</h2>
         </div>
-        <a href="/dashboard">Dashboard</a>
+        {kind === "listings" ? <a href="/dashboard/listings/new">Create listing</a> : <a href="/properties">Browse homes</a>}
       </div>
 
       {isLoading ? (

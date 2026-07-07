@@ -1,19 +1,11 @@
 import { ListingForm } from "../../../../components/listing-form";
+import { DashboardShell } from "../../../../components/dashboard-shell";
 import "../../../page.css";
 
 export default function NewListingPage() {
   return (
-    <main className="page-shell dashboard-page">
-      <section className="dashboard-panel">
-        <div className="dashboard-panel-header">
-          <div>
-            <p>Agent listing</p>
-            <h1>Create a listing</h1>
-          </div>
-          <a href="/dashboard/listings">My listings</a>
-        </div>
-        <ListingForm />
-      </section>
-    </main>
+    <DashboardShell active="new-listing" eyebrow="Agent listing" title="Create a listing" description="Add the essentials now; richer media and verification workflows can layer on next.">
+      <ListingForm />
+    </DashboardShell>
   );
 }
