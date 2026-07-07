@@ -32,7 +32,9 @@ Base path: `/api/v1`
 
 - `GET /admin/properties/review`
 - `POST /admin/properties/:id/verify`
+- `POST /admin/properties/:id/reject`
 - `POST /admin/properties/:id/feature`
+- `POST /admin/properties/:id/unfeature`
 - `POST /admin/properties/:id/hide`
 
 ## Response Shape
@@ -51,3 +53,5 @@ Base path: `/api/v1`
 - Public property read: `GET /properties`, `GET /properties/featured`, `GET /properties/:id`.
 - Agent property management: create, list own, update own, delete own, and confirm availability.
 - Inquiries: public inquiry creation and agent inquiry inbox.
+- Favorites: authenticated saved listing list, add, and remove.
+- Admin moderation: review queue, verify, reject, feature, unfeature, and hide.

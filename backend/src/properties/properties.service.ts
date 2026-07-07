@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { Prisma, VerificationStatus } from "@prisma/client";
 import { PrismaService } from "../prisma.service";
 import { CreatePropertyDto, PropertySearchDto, UpdatePropertyDto } from "./dto";
 
@@ -117,6 +117,49 @@ export class PropertiesService {
     return { data, meta: {}, error: null };
   }
 
+  async reviewQueue() {
+    const data = await this.prisma.property.findMany({
+      where: { verificationStatus: "PENDING" },
+      include: {
+        agent: { select: { id: true, name: true, email: true, phoneNumber: true } },
+        images: { orderBy: { displayOrder: "asc" }, take: 1 }
+      },
+      orderBy: { updatedAt: "asc" }
+    });
+
+    return { data, meta: {}, error: null };
+  }
+
+  async setVerification(id: string, verificationStatus: VerificationStatus) {
+    await this.assertExists(id);
+    const data = await this.prisma.property.update({
+      where: { id },
+      data: { verificationStatus }
+    });
+
+    return { data, meta: {}, error: null };
+  }
+
+  async setFeatured(id: string, isFeatured: boolean) {
+    await this.assertExists(id);
+    const data = await this.prisma.property.update({
+      where: { id },
+      data: { isFeatured }
+    });
+
+    return { data, meta: {}, error: null };
+  }
+
+  async hide(id: string) {
+    await this.assertExists(id);
+    const data = await this.prisma.property.update({
+      where: { id },
+      data: { status: "HIDDEN" }
+    });
+
+    return { data, meta: {}, error: null };
+  }
+
   async findOne(id: string) {
     const property = await this.prisma.property.findUnique({
       where: { id },
@@ -194,6 +237,17 @@ export class PropertiesService {
 
     if (property.agentId !== agentId) {
       throw new ForbiddenException("You do not own this property");
+    }
+  }
+
+  private async assertExists(id: string) {
+    const property = await this.prisma.property.findUnique({
+      where: { id },
+      select: { id: true }
+    });
+
+    if (!property) {
+      throw new NotFoundException("Property not found");
     }
   }
 

@@ -31,3 +31,17 @@ npm run test
 ```
 
 Each app also has its own scripts under `frontend` and `backend`.
+
+## Demo Accounts
+
+After configuring a PostgreSQL database and running migrations, seed local demo data with:
+
+```bash
+npm run prisma:seed --workspace backend
+```
+
+Seeded users share the password `Password123!`:
+
+- `admin@findyourcrib.test`
+- `agent@findyourcrib.test`
+- `renter@findyourcrib.test`

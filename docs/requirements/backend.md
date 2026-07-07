@@ -18,8 +18,8 @@
 
 ## Current Implementation Status
 
-- Done: JWT auth foundation, user service, public property search, featured properties, property detail, agent-owned property management, and inquiry creation/inbox.
-- Next: favorites, admin moderation, media upload workflow, seed data, and e2e tests.
+- Done: JWT auth foundation, user service, public property search, featured properties, property detail, agent-owned property management, inquiry creation/inbox, favorites, admin moderation, and seed data.
+- Next: media upload workflow, migrations, e2e tests, refresh tokens, and frontend API integration.
 
 ## Non-Functional Requirements
 
