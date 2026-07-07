@@ -774,7 +774,7 @@
   align-items: center;
   display: grid;
   gap: 14px;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   padding: 16px;
 }
 
@@ -791,6 +791,37 @@
 .dashboard-row span {
   color: var(--accent-strong);
   font-weight: 800;
+}
+
+.dashboard-row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.dashboard-row-actions button {
+  align-items: center;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 10px;
+}
+
+.dashboard-row-actions button:first-child {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+  color: var(--accent-strong);
+}
+
+.dashboard-row-actions button:disabled,
+.favorite-item button:disabled {
+  cursor: wait;
+  opacity: 0.62;
 }
 
 .inquiry-row {
@@ -1068,8 +1099,13 @@
     grid-template-columns: auto 1fr;
   }
 
-  .dashboard-row span {
+  .dashboard-row span,
+  .dashboard-row-actions {
     grid-column: 2;
+  }
+
+  .dashboard-row-actions {
+    flex-wrap: wrap;
   }
 
   .property-hero-content {

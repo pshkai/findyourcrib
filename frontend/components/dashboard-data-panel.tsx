@@ -1,8 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Building2, Heart, Inbox, LoaderCircle, Trash2 } from "lucide-react";
-import { getAgentInquiries, getAgentListings, getFavorites, removeFavorite, type FavoriteSummary, type InquirySummary } from "../lib/dashboard-client";
+import { Building2, CheckCircle2, Heart, Inbox, LoaderCircle, Trash2 } from "lucide-react";
+import {
+  confirmListingAvailability,
+  deleteListing,
+  getAgentInquiries,
+  getAgentListings,
+  getFavorites,
+  removeFavorite,
+  type FavoriteSummary,
+  type InquirySummary
+} from "../lib/dashboard-client";
 import { PropertyCard } from "./property-card";
 
 type PanelKind = "listings" | "inquiries" | "favorites";
@@ -15,6 +24,7 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
   const [items, setItems] = useState<unknown[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(true);
+  const [busyItemId, setBusyItemId] = useState<string | null>(null);
 
   const title = useMemo(() => {
     if (kind === "listings") return "Listing inventory";
@@ -59,8 +69,46 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
   }, [kind]);
 
   async function onRemoveFavorite(propertyId: string) {
-    await removeFavorite(propertyId);
-    setItems((current) => current.filter((item) => (item as FavoriteSummary).propertyId !== propertyId));
+    setBusyItemId(propertyId);
+
+    try {
+      await removeFavorite(propertyId);
+      setItems((current) => current.filter((item) => (item as FavoriteSummary).propertyId !== propertyId));
+    } finally {
+      setBusyItemId(null);
+    }
+  }
+
+  async function onConfirmListing(propertyId: string) {
+    setBusyItemId(propertyId);
+
+    try {
+      const updated = await confirmListingAvailability(propertyId);
+      setItems((current) => current.map((item) => ((item as AgentListingSummary).id === propertyId ? updated : item)));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Unable to confirm listing availability");
+    } finally {
+      setBusyItemId(null);
+    }
+  }
+
+  async function onDeleteListing(propertyId: string) {
+    const shouldDelete = window.confirm("Delete this listing? This cannot be undone.");
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    setBusyItemId(propertyId);
+
+    try {
+      await deleteListing(propertyId);
+      setItems((current) => current.filter((item) => (item as AgentListingSummary).id !== propertyId));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Unable to delete listing");
+    } finally {
+      setBusyItemId(null);
+    }
   }
 
   return (
@@ -93,17 +141,29 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
       {!isLoading && !error && kind === "listings" ? (
         <div className="dashboard-list">
           {items.map((item) => {
-            const listing = item as ReturnType<typeof getAgentListings> extends Promise<Array<infer T>> ? T : never;
+            const listing = item as AgentListingSummary;
+            const isBusy = busyItemId === listing.id;
+
             return (
               <article className="dashboard-row" key={listing.id}>
                 <Building2 size={22} />
                 <div>
                   <h2>{listing.title}</h2>
                   <p>
-                    {listing.township}, {listing.province} · {listing.status} · {listing.verificationStatus}
+                    {listing.township}, {listing.province} / {listing.status ?? "DRAFT"} / {listing.verificationStatus ?? "PENDING"}
                   </p>
                 </div>
                 <span>{listing.inquiryCount ?? 0} inquiries</span>
+                <div className="dashboard-row-actions">
+                  <button disabled={isBusy} type="button" onClick={() => void onConfirmListing(listing.id)}>
+                    <CheckCircle2 size={16} />
+                    {isBusy ? "Saving" : "Confirm"}
+                  </button>
+                  <button disabled={isBusy} type="button" onClick={() => void onDeleteListing(listing.id)}>
+                    <Trash2 size={16} />
+                    Delete
+                  </button>
+                </div>
               </article>
             );
           })}
@@ -132,9 +192,9 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
           {(items as FavoriteSummary[]).map((favorite) => (
             <div className="favorite-item" key={favorite.propertyId}>
               <PropertyCard property={favorite.property} />
-              <button type="button" onClick={() => void onRemoveFavorite(favorite.propertyId)}>
+              <button disabled={busyItemId === favorite.propertyId} type="button" onClick={() => void onRemoveFavorite(favorite.propertyId)}>
                 <Trash2 size={17} />
-                Remove
+                {busyItemId === favorite.propertyId ? "Removing" : "Remove"}
               </button>
             </div>
           ))}
@@ -143,6 +203,8 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
     </section>
   );
 }
+
+type AgentListingSummary = Awaited<ReturnType<typeof getAgentListings>>[number];
 
 function EmptyState({ kind }: { kind: PanelKind }) {
   const Icon = kind === "favorites" ? Heart : kind === "inquiries" ? Inbox : Building2;

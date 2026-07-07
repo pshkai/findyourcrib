@@ -107,6 +107,18 @@ export async function removeFavorite(propertyId: string) {
   await authorizedRequest(`/favorites/${propertyId}`, { method: "DELETE" });
 }
 
+export async function confirmListingAvailability(propertyId: string) {
+  const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/agent/properties/${propertyId}/confirm-availability`, {
+    method: "POST"
+  });
+
+  return mapProperty(envelope.data);
+}
+
+export async function deleteListing(propertyId: string) {
+  await authorizedRequest(`/agent/properties/${propertyId}`, { method: "DELETE" });
+}
+
 export async function createListing(payload: {
   title: string;
   description: string;
