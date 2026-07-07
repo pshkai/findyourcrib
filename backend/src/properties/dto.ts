@@ -1,5 +1,16 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { Type } from "class-transformer";
-import { IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
+import {
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Max,
+  Min,
+  MinLength
+} from "class-validator";
 
 export enum PropertyTypeDto {
   CONDO = "CONDO",
@@ -59,3 +70,73 @@ export class PropertySearchDto {
   @Max(50)
   pageSize = 20;
 }
+
+export class CreatePropertyDto {
+  @IsString()
+  @MinLength(8)
+  title!: string;
+
+  @IsString()
+  @MinLength(20)
+  description!: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  price!: number;
+
+  @IsEnum(PropertyTypeDto)
+  propertyType!: PropertyTypeDto;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  bedrooms?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  bathrooms?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  sizeSqm?: number;
+
+  @IsString()
+  address!: string;
+
+  @IsString()
+  township!: string;
+
+  @IsString()
+  province!: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  latitude?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  longitude?: number;
+
+  @IsOptional()
+  @IsString()
+  nearestStation?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  distanceToStation?: number;
+
+  @IsOptional()
+  @IsUrl({ require_tld: false })
+  coverImageUrl?: string;
+}
+
+export class UpdatePropertyDto extends PartialType(CreatePropertyDto) {}

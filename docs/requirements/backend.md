@@ -16,6 +16,11 @@
 - Inquiries: renter-to-agent contact workflow.
 - Admin: moderation and listing verification.
 
+## Current Implementation Status
+
+- Done: JWT auth foundation, user service, public property search, featured properties, property detail, agent-owned property management, and inquiry creation/inbox.
+- Next: favorites, admin moderation, media upload workflow, seed data, and e2e tests.
+
 ## Non-Functional Requirements
 
 - No uploaded media or generated build artifacts in Git.

@@ -1,11 +1,48 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma.service";
-import { PropertySearchDto } from "./dto";
+import { CreatePropertyDto, PropertySearchDto, UpdatePropertyDto } from "./dto";
 
 @Injectable()
 export class PropertiesService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async create(agentId: string, dto: CreatePropertyDto) {
+    const property = await this.prisma.property.create({
+      data: {
+        title: dto.title,
+        description: dto.description,
+        price: dto.price,
+        propertyType: dto.propertyType,
+        bedrooms: dto.bedrooms,
+        bathrooms: dto.bathrooms,
+        sizeSqm: dto.sizeSqm,
+        address: dto.address,
+        township: dto.township,
+        province: dto.province,
+        latitude: dto.latitude,
+        longitude: dto.longitude,
+        nearestStation: dto.nearestStation,
+        distanceToStation: dto.distanceToStation,
+        status: "AVAILABLE",
+        expiresAt: this.nextExpiry(),
+        lastConfirmedAt: new Date(),
+        agent: { connect: { id: agentId } },
+        images: dto.coverImageUrl
+          ? {
+              create: {
+                imageUrl: dto.coverImageUrl,
+                displayOrder: 0,
+                altText: dto.title
+              }
+            }
+          : undefined
+      },
+      include: { images: true }
+    });
+
+    return { data: property, meta: {}, error: null };
+  }
 
   async search(query: PropertySearchDto) {
     const where: Prisma.PropertyWhereInput = {
@@ -52,6 +89,19 @@ export class PropertiesService {
     return { data: items, meta: { page, pageSize, total }, error: null };
   }
 
+  async findMine(agentId: string) {
+    const data = await this.prisma.property.findMany({
+      where: { agentId },
+      include: {
+        images: { orderBy: { displayOrder: "asc" }, take: 1 },
+        _count: { select: { inquiries: true, favorites: true } }
+      },
+      orderBy: { updatedAt: "desc" }
+    });
+
+    return { data, meta: {}, error: null };
+  }
+
   async featured() {
     const data = await this.prisma.property.findMany({
       where: {
@@ -82,5 +132,74 @@ export class PropertiesService {
     }
 
     return { data: property, meta: {}, error: null };
+  }
+
+  async updateOwned(id: string, agentId: string, dto: UpdatePropertyDto) {
+    await this.assertOwnership(id, agentId);
+
+    const data = await this.prisma.property.update({
+      where: { id },
+      data: {
+        title: dto.title,
+        description: dto.description,
+        price: dto.price,
+        propertyType: dto.propertyType,
+        bedrooms: dto.bedrooms,
+        bathrooms: dto.bathrooms,
+        sizeSqm: dto.sizeSqm,
+        address: dto.address,
+        township: dto.township,
+        province: dto.province,
+        latitude: dto.latitude,
+        longitude: dto.longitude,
+        nearestStation: dto.nearestStation,
+        distanceToStation: dto.distanceToStation,
+        verificationStatus: "PENDING"
+      }
+    });
+
+    return { data, meta: {}, error: null };
+  }
+
+  async deleteOwned(id: string, agentId: string) {
+    await this.assertOwnership(id, agentId);
+    const data = await this.prisma.property.delete({ where: { id } });
+
+    return { data, meta: {}, error: null };
+  }
+
+  async confirmAvailability(id: string, agentId: string) {
+    await this.assertOwnership(id, agentId);
+    const data = await this.prisma.property.update({
+      where: { id },
+      data: {
+        status: "AVAILABLE",
+        expiresAt: this.nextExpiry(),
+        lastConfirmedAt: new Date()
+      }
+    });
+
+    return { data, meta: {}, error: null };
+  }
+
+  private async assertOwnership(id: string, agentId: string) {
+    const property = await this.prisma.property.findUnique({
+      where: { id },
+      select: { agentId: true }
+    });
+
+    if (!property) {
+      throw new NotFoundException("Property not found");
+    }
+
+    if (property.agentId !== agentId) {
+      throw new ForbiddenException("You do not own this property");
+    }
+  }
+
+  private nextExpiry() {
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+    return expiresAt;
   }
 }

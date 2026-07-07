@@ -9,20 +9,24 @@ Base path: `/api/v1`
 - `GET /properties/:id`
 - `GET /properties/featured`
 - `POST /inquiries`
+- `POST /auth/register`
+- `POST /auth/login`
 
 ## Authenticated
 
 - `GET /auth/me`
-- `POST /auth/logout`
 - `GET /favorites`
 - `POST /favorites/:propertyId`
 - `DELETE /favorites/:propertyId`
+- `GET /agent/inquiries`
+
+## Agent
+
 - `GET /agent/properties`
 - `POST /agent/properties`
 - `PATCH /agent/properties/:id`
 - `DELETE /agent/properties/:id`
 - `POST /agent/properties/:id/confirm-availability`
-- `GET /agent/inquiries`
 
 ## Admin
 
@@ -40,3 +44,10 @@ Base path: `/api/v1`
   "error": null
 }
 ```
+
+## Implemented in Current Backend Slice
+
+- Auth: `POST /auth/register`, `POST /auth/login`, `GET /auth/me`.
+- Public property read: `GET /properties`, `GET /properties/featured`, `GET /properties/:id`.
+- Agent property management: create, list own, update own, delete own, and confirm availability.
+- Inquiries: public inquiry creation and agent inquiry inbox.
