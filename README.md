@@ -37,6 +37,7 @@ Each app also has its own scripts under `frontend` and `backend`.
 After configuring a PostgreSQL database and running migrations, seed local demo data with:
 
 ```bash
+npm run prisma:migrate:deploy --workspace backend
 npm run prisma:seed --workspace backend
 ```
 
@@ -52,3 +53,4 @@ Seeded users share the password `Password123!`:
 - Render should build the backend with `npm run build --workspace backend` and start it with `npm run start:prod --workspace backend`.
 - Set `NEXT_PUBLIC_API_URL` in Vercel to the Render backend URL plus `/api/v1`.
 - Set `FRONTEND_URL` in Render to the Vercel frontend URL.
+- Set `DATABASE_URL` in Render to a valid PostgreSQL connection string, then run `npm run prisma:migrate:deploy --workspace backend`.

@@ -1,10 +1,13 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Prisma, VerificationStatus } from "@prisma/client";
 import { PrismaService } from "../prisma.service";
 import { CreatePropertyDto, PropertySearchDto, UpdatePropertyDto } from "./dto";
+import { fallbackProperties } from "./fallback-properties";
 
 @Injectable()
 export class PropertiesService {
+  private readonly logger = new Logger(PropertiesService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async create(agentId: string, dto: CreatePropertyDto) {
@@ -75,18 +78,24 @@ export class PropertiesService {
 
     const page = query.page ?? 1;
     const pageSize = query.pageSize ?? 20;
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.property.findMany({
-        where,
-        include: { images: { orderBy: { displayOrder: "asc" }, take: 1 } },
-        orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-        skip: (page - 1) * pageSize,
-        take: pageSize
-      }),
-      this.prisma.property.count({ where })
-    ]);
+    try {
+      const [items, total] = await this.prisma.$transaction([
+        this.prisma.property.findMany({
+          where,
+          include: { images: { orderBy: { displayOrder: "asc" }, take: 1 } },
+          orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+          skip: (page - 1) * pageSize,
+          take: pageSize
+        }),
+        this.prisma.property.count({ where })
+      ]);
 
-    return { data: items, meta: { page, pageSize, total }, error: null };
+      return { data: items, meta: { page, pageSize, total }, error: null };
+    } catch (error) {
+      this.logger.warn(`Serving fallback property search because the database is unavailable: ${this.errorMessage(error)}`);
+      const items = this.filterFallbackProperties(query).slice((page - 1) * pageSize, page * pageSize);
+      return { data: items, meta: { page, pageSize, total: items.length, fallback: true }, error: null };
+    }
   }
 
   async findMine(agentId: string) {
@@ -103,18 +112,23 @@ export class PropertiesService {
   }
 
   async featured() {
-    const data = await this.prisma.property.findMany({
-      where: {
-        status: "AVAILABLE",
-        verificationStatus: "VERIFIED",
-        isFeatured: true
-      },
-      include: { images: { orderBy: { displayOrder: "asc" }, take: 1 } },
-      orderBy: { createdAt: "desc" },
-      take: 8
-    });
+    try {
+      const data = await this.prisma.property.findMany({
+        where: {
+          status: "AVAILABLE",
+          verificationStatus: "VERIFIED",
+          isFeatured: true
+        },
+        include: { images: { orderBy: { displayOrder: "asc" }, take: 1 } },
+        orderBy: { createdAt: "desc" },
+        take: 8
+      });
 
-    return { data, meta: {}, error: null };
+      return { data, meta: {}, error: null };
+    } catch (error) {
+      this.logger.warn(`Serving fallback featured properties because the database is unavailable: ${this.errorMessage(error)}`);
+      return { data: fallbackProperties, meta: { fallback: true }, error: null };
+    }
   }
 
   async reviewQueue() {
@@ -161,20 +175,35 @@ export class PropertiesService {
   }
 
   async findOne(id: string) {
-    const property = await this.prisma.property.findUnique({
-      where: { id },
-      include: {
-        agent: { select: { id: true, name: true, phoneNumber: true } },
-        images: { orderBy: { displayOrder: "asc" } },
-        amenities: { include: { amenity: true } }
+    try {
+      const property = await this.prisma.property.findUnique({
+        where: { id },
+        include: {
+          agent: { select: { id: true, name: true, phoneNumber: true } },
+          images: { orderBy: { displayOrder: "asc" } },
+          amenities: { include: { amenity: true } }
+        }
+      });
+
+      if (!property) {
+        throw new NotFoundException("Property not found");
       }
-    });
 
-    if (!property) {
-      throw new NotFoundException("Property not found");
+      return { data: property, meta: {}, error: null };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      this.logger.warn(`Serving fallback property detail because the database is unavailable: ${this.errorMessage(error)}`);
+      const property = fallbackProperties.find((item) => item.id === id);
+
+      if (!property) {
+        throw new NotFoundException("Property not found");
+      }
+
+      return { data: property, meta: { fallback: true }, error: null };
     }
-
-    return { data: property, meta: {}, error: null };
   }
 
   async updateOwned(id: string, agentId: string, dto: UpdatePropertyDto) {
@@ -255,5 +284,32 @@ export class PropertiesService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
     return expiresAt;
+  }
+
+  private filterFallbackProperties(query: PropertySearchDto) {
+    const searchTerm = query.query?.toLowerCase();
+
+    return fallbackProperties.filter((property) => {
+      const matchesSearch = searchTerm
+        ? [property.title, property.description, property.township, property.province].some((value) =>
+            value.toLowerCase().includes(searchTerm)
+          )
+        : true;
+
+      return (
+        matchesSearch &&
+        (!query.township || property.township.toLowerCase().includes(query.township.toLowerCase())) &&
+        (!query.province || property.province.toLowerCase().includes(query.province.toLowerCase())) &&
+        (!query.propertyType || property.propertyType === query.propertyType) &&
+        (!query.bedrooms || property.bedrooms >= query.bedrooms) &&
+        (!query.bathrooms || property.bathrooms >= query.bathrooms) &&
+        (!query.minPrice || property.price >= query.minPrice) &&
+        (!query.maxPrice || property.price <= query.maxPrice)
+      );
+    });
+  }
+
+  private errorMessage(error: unknown) {
+    return error instanceof Error ? error.message : "unknown error";
   }
 }
