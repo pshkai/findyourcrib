@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import { Bath, BedDouble, CheckCircle2, MapPin, Ruler, TrainFront } from "lucide-react";
 import { FavoriteButton } from "../../../components/favorite-button";
 import { InquiryForm } from "../../../components/inquiry-form";
 import { SiteHeader } from "../../../components/site-header";
 import { getPropertyDetail } from "../../../lib/api";
+import { absoluteUrl } from "../../../lib/site";
 import "../../page.css";
 
 const formatter = new Intl.NumberFormat("en-TH", {
@@ -13,6 +15,34 @@ const formatter = new Intl.NumberFormat("en-TH", {
 
 interface PropertyDetailPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: PropertyDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const { property } = await getPropertyDetail(id);
+  const title = `${property.title} in ${property.township}`;
+  const description = `${property.propertyType.replace("_", " ").toLowerCase()} for rent in ${property.township}, ${property.province} at ${formatter.format(property.price)} per month.`;
+  const image = property.images[0]?.imageUrl ?? property.coverImageUrl ?? undefined;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: absoluteUrl(`/properties/${property.id}`)
+    },
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl(`/properties/${property.id}`),
+      images: image ? [{ url: image, alt: property.title }] : undefined
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: image ? [image] : undefined
+    }
+  };
 }
 
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {

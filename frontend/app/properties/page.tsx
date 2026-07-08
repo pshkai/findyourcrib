@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import { PropertyCard } from "../../components/property-card";
 import { SiteHeader } from "../../components/site-header";
+import { absoluteUrl } from "../../lib/site";
 import { searchProperties } from "../../lib/api";
 import type { PropertySort, PropertyType } from "@findyourcrib/shared";
 import "../page.css";
@@ -17,6 +19,19 @@ interface PropertiesPageProps {
     pageSize?: string;
   }>;
 }
+
+export const metadata: Metadata = {
+  title: "Browse verified rental homes",
+  description: "Search verified condos, apartments, houses, and villas for rent in Thailand.",
+  alternates: {
+    canonical: absoluteUrl("/properties")
+  },
+  openGraph: {
+    title: "Browse verified rental homes",
+    description: "Search verified condos, apartments, houses, and villas for rent in Thailand.",
+    url: absoluteUrl("/properties")
+  }
+};
 
 export default async function PropertiesPage({ searchParams }: PropertiesPageProps) {
   const params = await searchParams;

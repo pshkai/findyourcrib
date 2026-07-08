@@ -52,6 +52,7 @@ Seeded users share the password `Password123!`:
 - Vercel should build the frontend with `npm run build --workspace frontend`.
 - Render should build the backend with `npm run build --workspace backend` and start it with `npm run start:prod --workspace backend`.
 - Set `NEXT_PUBLIC_API_URL` in Vercel to the Render backend URL plus `/api/v1`.
+- Set `NEXT_PUBLIC_SITE_URL` in Vercel to the public frontend origin for canonical URLs, robots, and sitemap.
 - Set `FRONTEND_URL` in Render to the Vercel frontend URL.
 - Set `DATABASE_URL` in Render to a valid PostgreSQL connection string, then run `npm run prisma:migrate:deploy --workspace backend`.
 - Set `JWT_SECRET` in Render to a strong private value. Production startup fails without it.
