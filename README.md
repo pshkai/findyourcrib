@@ -53,6 +53,7 @@ Seeded users share the password `Password123!`:
 
 - Vercel should build the frontend with `npm run build --workspace frontend`.
 - Render should build the backend with `npm run build --workspace backend` and start it with `npm run start:prod --workspace backend`.
+- Render health checks can use `/api/v1/health` for process liveness or `/api/v1/health/ready` when database readiness should gate traffic.
 - Set `NEXT_PUBLIC_API_URL` in Vercel to the Render backend URL plus `/api/v1`.
 - Set `NEXT_PUBLIC_SITE_URL` in Vercel to the public frontend origin for canonical URLs, robots, and sitemap.
 - Set `FRONTEND_URL` in Render to the Vercel frontend URL.

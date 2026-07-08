@@ -5,6 +5,7 @@ Base path: `/api/v1`
 ## Public
 
 - `GET /health`
+- `GET /health/ready`
 - `GET /properties`
 - `GET /properties/:id`
 - `GET /properties/featured`

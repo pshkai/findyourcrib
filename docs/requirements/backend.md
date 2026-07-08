@@ -32,3 +32,4 @@
 - Production requires `DATABASE_URL` and a private `JWT_SECRET`; local development falls back to safe local defaults.
 - Browser-origin write requests are restricted to configured `FRONTEND_URL` origins to protect cookie-authenticated sessions.
 - API responses include baseline security headers through Helmet.
+- Health checks expose liveness at `/api/v1/health` and database readiness at `/api/v1/health/ready`.
