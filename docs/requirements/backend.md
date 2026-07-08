@@ -4,7 +4,7 @@
 
 - NestJS with TypeScript.
 - Prisma with PostgreSQL.
-- JWT access tokens, refresh-token rotation planned after MVP auth is stable.
+- JWT access tokens with explicit expiry, refresh-token rotation planned after MVP auth is stable.
 - Zod or class-validator at the API boundary; shared response contracts in `shared`.
 
 ## Core Modules
@@ -28,3 +28,4 @@
 - Search must be database-filtered, including location radius once PostGIS is enabled.
 - Every mutating endpoint checks ownership or role.
 - API responses are stable and documented before frontend integration.
+- Production requires `JWT_SECRET`; local development falls back to a non-production secret.

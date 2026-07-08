@@ -54,3 +54,5 @@ Seeded users share the password `Password123!`:
 - Set `NEXT_PUBLIC_API_URL` in Vercel to the Render backend URL plus `/api/v1`.
 - Set `FRONTEND_URL` in Render to the Vercel frontend URL.
 - Set `DATABASE_URL` in Render to a valid PostgreSQL connection string, then run `npm run prisma:migrate:deploy --workspace backend`.
+- Set `JWT_SECRET` in Render to a strong private value. Production startup fails without it.
+- Optional: set `JWT_EXPIRES_IN` in Render, defaulting to `1h`.
