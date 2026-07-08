@@ -1187,17 +1187,80 @@
   padding: 14px;
 }
 
-.listing-form .image-url-field span {
+.image-field-header,
+.image-field-header span {
   align-items: center;
-  color: var(--accent-strong);
   display: inline-flex;
+}
+
+.image-field-header {
+  justify-content: space-between;
+}
+
+.image-field-header span {
+  color: var(--accent-strong);
   font-weight: 900;
   gap: 7px;
 }
 
-.listing-form .image-url-field textarea {
-  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  min-height: 150px;
+.image-field-header button,
+.image-url-row > button {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  color: var(--accent-strong);
+  min-height: 38px;
+  padding: 0 12px;
+}
+
+.image-url-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.image-url-row {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 120px 1fr auto;
+}
+
+.image-preview {
+  align-items: center;
+  aspect-ratio: 4 / 3;
+  background: color-mix(in srgb, var(--surface-strong) 72%, var(--surface));
+  background-position: center;
+  background-size: cover;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.image-preview strong {
+  background: color-mix(in srgb, var(--ink) 86%, transparent);
+  border-radius: 999px;
+  bottom: 7px;
+  color: var(--page);
+  font-size: 0.68rem;
+  left: 7px;
+  padding: 4px 7px;
+  position: absolute;
+  text-transform: uppercase;
+}
+
+.image-url-row > button {
+  color: #be123c;
+  padding: 0;
+  width: 42px;
+}
+
+.image-url-row > button:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.54;
 }
 
 .property-detail-page {
@@ -1391,8 +1454,19 @@
   .property-detail-layout,
   .detail-facts,
   .detail-gallery,
+  .image-url-row,
   .admin-review-row {
     grid-template-columns: 1fr;
+  }
+
+  .image-field-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .image-url-row > button {
+    width: 100%;
   }
 
   .dashboard-sidebar {

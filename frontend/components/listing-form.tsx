@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, Images, Save } from "lucide-react";
+import { Building2, ImagePlus, Save, Trash2 } from "lucide-react";
 import { createListing, updateListing } from "../lib/dashboard-client";
 import type { PropertySummary, PropertyType } from "@findyourcrib/shared";
 
@@ -20,6 +20,10 @@ interface ListingFormProps {
 
 export function ListingForm({ mode = "create", listing }: ListingFormProps) {
   const router = useRouter();
+  const [imageUrls, setImageUrls] = useState(() =>
+    listing?.imageUrls?.length ? listing.imageUrls : listing?.coverImageUrl ? [listing.coverImageUrl] : [""]
+  );
+  const coverIndex = firstFilledImageIndex(imageUrls);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -39,7 +43,7 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       township: String(formData.get("township") ?? ""),
       province: String(formData.get("province") ?? ""),
       coverImageUrl: String(formData.get("coverImageUrl") ?? "") || undefined,
-      images: parseImageUrls(String(formData.get("imageUrls") ?? ""))
+      images: parseImageUrls(imageUrls.join("\n"))
     };
 
     try {
@@ -111,21 +115,46 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
         Address
         <input name="address" required placeholder="Building, street, area" defaultValue={listing?.address ?? ""} />
       </label>
-      <label className="wide">
-        Cover image URL
-        <input name="coverImageUrl" type="url" placeholder="https://..." defaultValue={listing?.coverImageUrl ?? ""} />
-      </label>
-      <label className="wide image-url-field">
-        <span>
-          <Images size={16} />
-          Gallery image URLs
-        </span>
-        <textarea
-          name="imageUrls"
-          placeholder={"https://...\nhttps://..."}
-          defaultValue={(listing?.imageUrls?.length ? listing.imageUrls : listing?.coverImageUrl ? [listing.coverImageUrl] : []).join("\n")}
-        />
-      </label>
+      <input type="hidden" name="coverImageUrl" value={firstFilledImageUrl(imageUrls)} />
+      <div className="wide image-url-field">
+        <div className="image-field-header">
+          <span>
+            <ImagePlus size={16} />
+            Listing gallery
+          </span>
+          <button type="button" onClick={() => setImageUrls((urls) => [...urls, ""])} aria-label="Add image URL">
+            <ImagePlus size={16} />
+            Add image
+          </button>
+        </div>
+        <div className="image-url-grid">
+          {imageUrls.map((imageUrl, index) => (
+            <div className="image-url-row" key={index}>
+              <div className="image-preview" style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : undefined }}>
+                {!imageUrl ? <ImagePlus size={18} /> : null}
+                {index === coverIndex ? <strong>Cover</strong> : null}
+              </div>
+              <label>
+                Image URL {index + 1}
+                <input
+                  type="url"
+                  placeholder="https://..."
+                  value={imageUrl}
+                  onChange={(event) => updateImageUrl(index, event.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => removeImageUrl(index)}
+                aria-label={`Remove image URL ${index + 1}`}
+                disabled={imageUrls.length === 1}
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {error ? <p className="auth-error wide">{error}</p> : null}
 
@@ -135,6 +164,26 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       </button>
     </form>
   );
+
+  function updateImageUrl(index: number, value: string) {
+    setImageUrls((urls) => urls.map((url, urlIndex) => (urlIndex === index ? value : url)));
+  }
+
+  function removeImageUrl(index: number) {
+    setImageUrls((urls) => {
+      const nextUrls = urls.filter((_, urlIndex) => urlIndex !== index);
+      return nextUrls.length ? nextUrls : [""];
+    });
+  }
+}
+
+function firstFilledImageUrl(urls: string[]) {
+  return urls.find((url) => url.trim())?.trim() ?? "";
+}
+
+function firstFilledImageIndex(urls: string[]) {
+  const index = urls.findIndex((url) => url.trim());
+  return index >= 0 ? index : 0;
 }
 
 function parseImageUrls(value: string) {
