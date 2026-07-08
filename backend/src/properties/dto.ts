@@ -20,6 +20,13 @@ export enum PropertyTypeDto {
   SERVICED_APARTMENT = "SERVICED_APARTMENT"
 }
 
+export enum PropertySortDto {
+  NEWEST = "newest",
+  PRICE_ASC = "price_asc",
+  PRICE_DESC = "price_desc",
+  FEATURED = "featured"
+}
+
 export class PropertySearchDto {
   @IsOptional()
   @IsString()
@@ -56,6 +63,10 @@ export class PropertySearchDto {
   @Type(() => Number)
   @IsInt()
   bathrooms?: number;
+
+  @IsOptional()
+  @IsEnum(PropertySortDto)
+  sort: PropertySortDto = PropertySortDto.FEATURED;
 
   @IsOptional()
   @Type(() => Number)

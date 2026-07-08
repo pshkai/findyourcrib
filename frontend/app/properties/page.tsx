@@ -1,14 +1,18 @@
 import { PropertyCard } from "../../components/property-card";
 import { SiteHeader } from "../../components/site-header";
 import { searchProperties } from "../../lib/api";
-import type { PropertyType } from "@findyourcrib/shared";
+import type { PropertySort, PropertyType } from "@findyourcrib/shared";
 import "../page.css";
 
 interface PropertiesPageProps {
   searchParams: Promise<{
     query?: string;
     propertyType?: PropertyType;
+    minPrice?: string;
     maxPrice?: string;
+    bedrooms?: string;
+    bathrooms?: string;
+    sort?: PropertySort;
   }>;
 }
 
@@ -17,7 +21,11 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
   const { properties, meta } = await searchProperties({
     query: params.query,
     propertyType: params.propertyType,
-    maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined
+    minPrice: params.minPrice ? Number(params.minPrice) : undefined,
+    maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
+    bedrooms: params.bedrooms ? Number(params.bedrooms) : undefined,
+    bathrooms: params.bathrooms ? Number(params.bathrooms) : undefined,
+    sort: params.sort ?? "featured"
   });
   const isFallback = Boolean(meta.fallback);
 
@@ -45,7 +53,27 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             <option value="VILLA">Villa</option>
             <option value="SERVICED_APARTMENT">Serviced apartment</option>
           </select>
+          <input name="minPrice" placeholder="Min price" inputMode="numeric" defaultValue={params.minPrice ?? ""} />
           <input name="maxPrice" placeholder="Max price" inputMode="numeric" defaultValue={params.maxPrice ?? ""} />
+          <select name="bedrooms" defaultValue={params.bedrooms ?? ""}>
+            <option value="">Beds</option>
+            <option value="1">1+ beds</option>
+            <option value="2">2+ beds</option>
+            <option value="3">3+ beds</option>
+            <option value="4">4+ beds</option>
+          </select>
+          <select name="bathrooms" defaultValue={params.bathrooms ?? ""}>
+            <option value="">Baths</option>
+            <option value="1">1+ baths</option>
+            <option value="2">2+ baths</option>
+            <option value="3">3+ baths</option>
+          </select>
+          <select name="sort" defaultValue={params.sort ?? "featured"}>
+            <option value="featured">Featured first</option>
+            <option value="newest">Newest</option>
+            <option value="price_asc">Price low to high</option>
+            <option value="price_desc">Price high to low</option>
+          </select>
           <button type="submit">Apply</button>
         </form>
 

@@ -48,6 +48,12 @@ Base path: `/api/v1`
 }
 ```
 
+## Property Search Parameters
+
+`GET /properties` accepts `query`, `township`, `province`, `propertyType`, `minPrice`, `maxPrice`, `bedrooms`, `bathrooms`, `page`, `pageSize`, and `sort`.
+
+Sort options: `featured`, `newest`, `price_asc`, `price_desc`.
+
 ## Implemented in Current Backend Slice
 
 - Auth: `POST /auth/register`, `POST /auth/login`, `GET /auth/me`.

@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Prisma, VerificationStatus } from "@prisma/client";
 import { PrismaService } from "../prisma.service";
-import { CreatePropertyDto, PropertySearchDto, UpdatePropertyDto } from "./dto";
+import { CreatePropertyDto, PropertySearchDto, PropertySortDto, UpdatePropertyDto } from "./dto";
 import { fallbackProperties } from "./fallback-properties";
 
 @Injectable()
@@ -83,7 +83,7 @@ export class PropertiesService {
         this.prisma.property.findMany({
           where,
           include: { images: { orderBy: { displayOrder: "asc" }, take: 1 } },
-          orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+          orderBy: this.searchOrderBy(query.sort),
           skip: (page - 1) * pageSize,
           take: pageSize
         }),
@@ -93,8 +93,9 @@ export class PropertiesService {
       return { data: items, meta: { page, pageSize, total }, error: null };
     } catch (error) {
       this.logger.warn(`Serving fallback property search because the database is unavailable: ${this.errorMessage(error)}`);
-      const items = this.filterFallbackProperties(query).slice((page - 1) * pageSize, page * pageSize);
-      return { data: items, meta: { page, pageSize, total: items.length, fallback: true }, error: null };
+      const filtered = this.sortFallbackProperties(this.filterFallbackProperties(query), query.sort);
+      const items = filtered.slice((page - 1) * pageSize, page * pageSize);
+      return { data: items, meta: { page, pageSize, total: filtered.length, fallback: true }, error: null };
     }
   }
 
@@ -350,6 +351,36 @@ export class PropertiesService {
         (!query.maxPrice || property.price <= query.maxPrice)
       );
     });
+  }
+
+  private searchOrderBy(sort: PropertySortDto = PropertySortDto.FEATURED): Prisma.PropertyOrderByWithRelationInput[] {
+    if (sort === PropertySortDto.PRICE_ASC) {
+      return [{ price: "asc" }, { createdAt: "desc" }];
+    }
+
+    if (sort === PropertySortDto.PRICE_DESC) {
+      return [{ price: "desc" }, { createdAt: "desc" }];
+    }
+
+    if (sort === PropertySortDto.NEWEST) {
+      return [{ createdAt: "desc" }];
+    }
+
+    return [{ isFeatured: "desc" }, { createdAt: "desc" }];
+  }
+
+  private sortFallbackProperties(properties: typeof fallbackProperties, sort: PropertySortDto = PropertySortDto.FEATURED) {
+    const sorted = [...properties];
+
+    if (sort === PropertySortDto.PRICE_ASC) {
+      return sorted.sort((a, b) => a.price - b.price);
+    }
+
+    if (sort === PropertySortDto.PRICE_DESC) {
+      return sorted.sort((a, b) => b.price - a.price);
+    }
+
+    return sorted;
   }
 
   private errorMessage(error: unknown) {

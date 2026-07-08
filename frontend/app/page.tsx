@@ -56,9 +56,10 @@ export default async function Home() {
               </select>
             </label>
             <label>
-              Max price
-              <input name="maxPrice" placeholder="50000" inputMode="numeric" />
+              Price range
+              <input name="maxPrice" placeholder="Max 50000" inputMode="numeric" />
             </label>
+            <input type="hidden" name="sort" value="featured" />
             <button type="submit">
               <Search size={18} />
               Search

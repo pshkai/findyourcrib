@@ -6,6 +6,8 @@ export type VerificationStatus = "PENDING" | "VERIFIED" | "REJECTED";
 
 export type PropertyType = "CONDO" | "APARTMENT" | "HOUSE" | "VILLA" | "SERVICED_APARTMENT";
 
+export type PropertySort = "newest" | "price_asc" | "price_desc" | "featured";
+
 export interface PropertySearchParams {
   query?: string;
   township?: string;
@@ -15,6 +17,7 @@ export interface PropertySearchParams {
   maxPrice?: number;
   bedrooms?: number;
   bathrooms?: number;
+  sort?: PropertySort;
   page?: number;
   pageSize?: number;
 }

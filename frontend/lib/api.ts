@@ -145,6 +145,7 @@ export async function searchProperties(params: PropertySearchParams) {
       maxPrice: params.maxPrice,
       bedrooms: params.bedrooms,
       bathrooms: params.bathrooms,
+      sort: params.sort,
       page: params.page,
       pageSize: params.pageSize
     });
