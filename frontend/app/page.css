@@ -942,6 +942,27 @@
   padding-left: 12px;
 }
 
+.inquiry-title-line {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.inquiry-title-line span {
+  background: var(--warm-soft);
+  border-radius: 999px;
+  color: var(--warm);
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 5px 9px;
+  text-transform: uppercase;
+}
+
+.inquiry-actions {
+  margin-top: 14px;
+}
+
 .favorite-item {
   display: grid;
   gap: 10px;

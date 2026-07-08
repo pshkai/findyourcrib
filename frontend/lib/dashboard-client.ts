@@ -37,6 +37,7 @@ export interface InquirySummary {
   contactName: string;
   contactEmail: string;
   contactPhone: string | null;
+  status: "NEW" | "CONTACTED" | "CLOSED" | "ARCHIVED";
   createdAt: string;
   property: {
     id: string;
@@ -102,6 +103,15 @@ export async function getAgentListing(propertyId: string) {
 
 export async function getAgentInquiries() {
   const envelope = await authorizedRequest<Envelope<InquirySummary[]>>("/agent/inquiries");
+  return envelope.data;
+}
+
+export async function updateInquiryStatus(inquiryId: string, status: InquirySummary["status"]) {
+  const envelope = await authorizedRequest<Envelope<InquirySummary>>(`/agent/inquiries/${inquiryId}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status })
+  });
+
   return envelope.data;
 }
 

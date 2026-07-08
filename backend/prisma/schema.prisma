@@ -36,6 +36,13 @@ enum PropertyType {
   SERVICED_APARTMENT
 }
 
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+  ARCHIVED
+}
+
 model User {
   id           String     @id @default(uuid())
   name         String
@@ -141,7 +148,9 @@ model Inquiry {
   contactName  String
   contactEmail String
   contactPhone String?
+  status       InquiryStatus @default(NEW)
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   propertyId   String
   customerId   String?

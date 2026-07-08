@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
 import { UserRole } from "@prisma/client";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Roles } from "../auth/roles.decorator";
 import { RolesGuard } from "../auth/roles.guard";
 import type { AuthUser } from "../auth/auth.types";
-import { CreateInquiryDto } from "./dto";
+import { CreateInquiryDto, UpdateInquiryStatusDto } from "./dto";
 import { InquiriesService } from "./inquiries.service";
 
 @Controller()
@@ -22,5 +22,12 @@ export class InquiriesController {
   @Get("agent/inquiries")
   findForAgent(@CurrentUser() user: AuthUser) {
     return this.inquiriesService.findForAgent(user.sub);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.AGENT, UserRole.OWNER, UserRole.ADMIN)
+  @Patch("agent/inquiries/:id/status")
+  updateStatus(@CurrentUser() user: AuthUser, @Param("id") id: string, @Body() dto: UpdateInquiryStatusDto) {
+    return this.inquiriesService.updateStatus(id, user.sub, dto.status);
   }
 }

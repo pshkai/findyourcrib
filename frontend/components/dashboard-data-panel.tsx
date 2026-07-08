@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Building2, CheckCircle2, Heart, Inbox, LoaderCircle, Pencil, Trash2 } from "lucide-react";
+import { Archive, Building2, CheckCircle2, Heart, Inbox, LoaderCircle, MailCheck, Pencil, Trash2, XCircle } from "lucide-react";
 import {
   confirmListingAvailability,
   deleteListing,
@@ -9,6 +9,7 @@ import {
   getAgentListings,
   getFavorites,
   removeFavorite,
+  updateInquiryStatus,
   type FavoriteSummary,
   type InquirySummary
 } from "../lib/dashboard-client";
@@ -111,6 +112,20 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
     }
   }
 
+  async function onUpdateInquiryStatus(inquiryId: string, status: InquirySummary["status"]) {
+    setBusyItemId(inquiryId);
+    setError(null);
+
+    try {
+      const updated = await updateInquiryStatus(inquiryId, status);
+      setItems((current) => current.map((item) => ((item as InquirySummary).id === inquiryId ? updated : item)));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Unable to update inquiry");
+    } finally {
+      setBusyItemId(null);
+    }
+  }
+
   return (
     <section className="dashboard-panel">
       <div className="dashboard-panel-header">
@@ -180,11 +195,29 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
             <article className="dashboard-row inquiry-row" key={inquiry.id}>
               <Inbox size={22} />
               <div>
-                <h2>{inquiry.contactName}</h2>
+                <div className="inquiry-title-line">
+                  <h2>{inquiry.contactName}</h2>
+                  <span>{inquiry.status.toLowerCase()}</span>
+                </div>
                 <p>
-                  {inquiry.property.title} · {inquiry.contactEmail}
+                  {inquiry.property.title} / {inquiry.contactEmail}
+                  {inquiry.contactPhone ? ` / ${inquiry.contactPhone}` : ""}
                 </p>
                 <blockquote>{inquiry.message}</blockquote>
+                <div className="dashboard-row-actions inquiry-actions">
+                  <button disabled={busyItemId === inquiry.id} type="button" onClick={() => void onUpdateInquiryStatus(inquiry.id, "CONTACTED")}>
+                    <MailCheck size={16} />
+                    Contacted
+                  </button>
+                  <button disabled={busyItemId === inquiry.id} type="button" onClick={() => void onUpdateInquiryStatus(inquiry.id, "CLOSED")}>
+                    <XCircle size={16} />
+                    Close
+                  </button>
+                  <button disabled={busyItemId === inquiry.id} type="button" onClick={() => void onUpdateInquiryStatus(inquiry.id, "ARCHIVED")}>
+                    <Archive size={16} />
+                    Archive
+                  </button>
+                </div>
               </div>
             </article>
           ))}

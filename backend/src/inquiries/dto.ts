@@ -1,4 +1,5 @@
-import { IsEmail, IsOptional, IsString, IsUUID, MinLength } from "class-validator";
+import { InquiryStatus } from "@prisma/client";
+import { IsEmail, IsEnum, IsOptional, IsString, IsUUID, MinLength } from "class-validator";
 
 export class CreateInquiryDto {
   @IsUUID()
@@ -17,4 +18,9 @@ export class CreateInquiryDto {
   @IsOptional()
   @IsString()
   contactPhone?: string;
+}
+
+export class UpdateInquiryStatusDto {
+  @IsEnum(InquiryStatus)
+  status!: InquiryStatus;
 }

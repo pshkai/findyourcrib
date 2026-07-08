@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { InquiryStatus } from "@prisma/client";
 import { PrismaService } from "../prisma.service";
 import { CreateInquiryDto } from "./dto";
 
@@ -48,6 +49,34 @@ export class InquiriesService {
         }
       },
       orderBy: { createdAt: "desc" }
+    });
+
+    return { data, meta: {}, error: null };
+  }
+
+  async updateStatus(id: string, agentId: string, status: InquiryStatus) {
+    const inquiry = await this.prisma.inquiry.findFirst({
+      where: { id, property: { agentId } },
+      select: { id: true }
+    });
+
+    if (!inquiry) {
+      throw new NotFoundException("Inquiry not found");
+    }
+
+    const data = await this.prisma.inquiry.update({
+      where: { id },
+      data: { status },
+      include: {
+        property: {
+          select: {
+            id: true,
+            title: true,
+            township: true,
+            province: true
+          }
+        }
+      }
     });
 
     return { data, meta: {}, error: null };

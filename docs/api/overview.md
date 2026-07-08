@@ -19,6 +19,7 @@ Base path: `/api/v1`
 - `POST /favorites/:propertyId`
 - `DELETE /favorites/:propertyId`
 - `GET /agent/inquiries`
+- `PATCH /agent/inquiries/:id/status`
 
 ## Agent
 
@@ -53,5 +54,6 @@ Base path: `/api/v1`
 - Public property read: `GET /properties`, `GET /properties/featured`, `GET /properties/:id`.
 - Agent property management: create, list own, update own, delete own, and confirm availability.
 - Inquiries: public inquiry creation and agent inquiry inbox.
+- Inquiry triage: agents can mark inquiries as `NEW`, `CONTACTED`, `CLOSED`, or `ARCHIVED`.
 - Favorites: authenticated saved listing list, add, and remove.
 - Admin moderation: review queue, verify, reject, feature, unfeature, and hide.
