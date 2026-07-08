@@ -1,16 +1,18 @@
 import { ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { ApiExceptionFilter } from "./api-exception.filter";
 import { AppModule } from "./app.module";
 
-const defaultFrontendOrigins = ["http://localhost:3000", "https://findyourcrib.vercel.app"];
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const allowedOrigins = (process.env.FRONTEND_URL ?? defaultFrontendOrigins.join(","))
+  const configService = app.get(ConfigService);
+  const allowedOrigins = configService
+    .getOrThrow<string>("FRONTEND_URL")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
+  const port = configService.getOrThrow<number>("PORT");
 
   app.setGlobalPrefix("api/v1");
   app.enableCors({
@@ -26,7 +28,7 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new ApiExceptionFilter());
 
-  await app.listen(process.env.PORT ? Number(process.env.PORT) : 4000);
+  await app.listen(port);
 }
 
 void bootstrap();

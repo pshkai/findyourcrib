@@ -59,3 +59,4 @@ Seeded users share the password `Password123!`:
 - Set `DATABASE_URL` in Render to a valid PostgreSQL connection string, then run `npm run prisma:migrate:deploy --workspace backend`.
 - Set `JWT_SECRET` in Render to a strong private value. Production startup fails without it.
 - Optional: set `JWT_EXPIRES_IN` in Render, defaulting to `1h`.
+- Optional: set `PORT` in Render if the platform does not inject one. The backend validates `PORT`, `DATABASE_URL`, `FRONTEND_URL`, and JWT settings at startup.

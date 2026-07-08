@@ -28,4 +28,5 @@
 - Search must be database-filtered, including location radius once PostGIS is enabled.
 - Every mutating endpoint checks ownership or role.
 - API responses are stable and documented before frontend integration.
-- Production requires `JWT_SECRET`; local development falls back to a non-production secret.
+- Backend startup validates `PORT`, `DATABASE_URL`, `FRONTEND_URL`, and JWT settings before accepting traffic.
+- Production requires `DATABASE_URL` and a private `JWT_SECRET`; local development falls back to safe local defaults.
