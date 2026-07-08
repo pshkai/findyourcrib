@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Home, LogIn, UserPlus } from "lucide-react";
+import { useAuth } from "./auth-provider";
 import { login, register } from "../lib/auth-client";
 
 type AuthMode = "login" | "register";
 
 export function AuthForm({ mode }: { mode: AuthMode }) {
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -32,6 +34,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         });
       }
 
+      await refreshUser();
       router.push("/dashboard");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Something went wrong");

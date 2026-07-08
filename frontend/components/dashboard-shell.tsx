@@ -1,5 +1,10 @@
+"use client";
+
 import type { ReactNode } from "react";
-import { Building2, Heart, Inbox, LayoutDashboard, PlusCircle } from "lucide-react";
+import { useEffect } from "react";
+import { Building2, Heart, Inbox, LayoutDashboard, LoaderCircle, LockKeyhole, PlusCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "./auth-provider";
 import { SiteHeader } from "./site-header";
 
 type DashboardSection = "overview" | "listings" | "inquiries" | "favorites" | "new-listing";
@@ -25,6 +30,44 @@ interface DashboardShellProps {
 }
 
 export function DashboardShell({ active, eyebrow = "Workspace", title, description, children }: DashboardShellProps) {
+  const router = useRouter();
+  const { status } = useAuth();
+
+  useEffect(() => {
+    if (status === "guest") {
+      router.replace("/login");
+    }
+  }, [router, status]);
+
+  if (status === "loading") {
+    return (
+      <>
+        <SiteHeader />
+        <main className="dashboard-shell">
+          <section className="page-shell dashboard-auth-state">
+            <LoaderCircle className="spin" size={24} />
+            Checking your session...
+          </section>
+        </main>
+      </>
+    );
+  }
+
+  if (status === "guest") {
+    return (
+      <>
+        <SiteHeader />
+        <main className="dashboard-shell">
+          <section className="page-shell dashboard-auth-state">
+            <LockKeyhole size={24} />
+            Login to open your FindYourCrib workspace.
+            <a href="/login">Login</a>
+          </section>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <SiteHeader />

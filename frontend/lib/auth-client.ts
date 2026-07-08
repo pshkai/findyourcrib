@@ -3,16 +3,23 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 const TOKEN_KEY = "findyourcrib.accessToken";
 
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  role: "RENTER" | "AGENT" | "OWNER" | "ADMIN";
+}
+
 interface AuthResponse {
   data: {
     accessToken: string;
-    user: {
-      id: string;
-      email: string;
-      name: string;
-      role: string;
-    };
+    user: AuthUser;
   };
+  error: unknown;
+}
+
+interface MeResponse {
+  data: AuthUser | null;
   error: unknown;
 }
 
@@ -51,6 +58,11 @@ export async function authorizedRequest<T>(path: string, init?: RequestInit) {
   }
 
   return (await response.json()) as T;
+}
+
+export async function getCurrentUser() {
+  const envelope = await authorizedRequest<MeResponse>("/auth/me");
+  return envelope.data;
 }
 
 async function authRequest(path: string, payload: Record<string, unknown>) {

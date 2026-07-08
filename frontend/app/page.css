@@ -52,9 +52,33 @@
     transform 0.2s ease;
 }
 
-.nav a:hover {
+.nav a:hover,
+.nav-logout:hover {
   color: var(--accent-strong);
   transform: translateY(-1px);
+}
+
+.nav-user,
+.nav-logout {
+  align-items: center;
+  display: inline-flex;
+  gap: 7px;
+}
+
+.nav-user {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.nav-logout {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .theme-toggle {
@@ -486,6 +510,24 @@
   display: grid;
   gap: 22px;
   grid-template-columns: 260px 1fr;
+}
+
+.dashboard-auth-state {
+  align-items: center;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  min-height: 220px;
+  padding: 24px;
+}
+
+.dashboard-auth-state a {
+  color: var(--accent-strong);
+  font-weight: 900;
 }
 
 .dashboard-sidebar,
