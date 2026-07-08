@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "e2e": "playwright test",
     "lint": "next lint"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/node": "^20.16.10",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

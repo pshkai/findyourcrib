@@ -26,3 +26,5 @@ jobs:
       - run: npm run test --workspace backend
       - run: npm run build --workspace backend
       - run: npm run build --workspace frontend
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e --workspace frontend
