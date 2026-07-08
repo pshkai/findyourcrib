@@ -24,6 +24,7 @@ Auth notes:
 - `POST /auth/register` and `POST /auth/login` return the access token for API clients and set an httpOnly `fyc_session` cookie for browser clients.
 - Authenticated browser requests should send credentials. Non-browser API clients can continue using `Authorization: Bearer <token>`.
 - `POST /auth/logout` clears the browser session cookie.
+- Mutating browser requests with an `Origin` header must come from a configured `FRONTEND_URL` origin.
 
 ## Authenticated
 

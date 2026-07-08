@@ -57,6 +57,7 @@ Seeded users share the password `Password123!`:
 - Set `NEXT_PUBLIC_SITE_URL` in Vercel to the public frontend origin for canonical URLs, robots, and sitemap.
 - Set `FRONTEND_URL` in Render to the Vercel frontend URL.
 - Keep Vercel `NEXT_PUBLIC_API_URL` and Render `FRONTEND_URL` on HTTPS in production so httpOnly auth cookies can be sent cross-site.
+- Add every production frontend origin to Render `FRONTEND_URL`; browser write requests from other origins are rejected.
 - Set `DATABASE_URL` in Render to a valid PostgreSQL connection string, then run `npm run prisma:migrate:deploy --workspace backend`.
 - Set `JWT_SECRET` in Render to a strong private value. Production startup fails without it.
 - Optional: set `JWT_EXPIRES_IN` in Render, defaulting to `1h`.
