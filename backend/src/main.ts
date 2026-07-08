@@ -1,5 +1,6 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import { ApiExceptionFilter } from "./api-exception.filter";
 import { AppModule } from "./app.module";
 
 const defaultFrontendOrigins = ["http://localhost:3000", "https://findyourcrib.vercel.app"];
@@ -23,6 +24,7 @@ async function bootstrap() {
       transform: true
     })
   );
+  app.useGlobalFilters(new ApiExceptionFilter());
 
   await app.listen(process.env.PORT ? Number(process.env.PORT) : 4000);
 }

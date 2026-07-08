@@ -54,6 +54,19 @@ Rate limits:
 }
 ```
 
+Error responses use the same envelope:
+
+```json
+{
+  "data": null,
+  "meta": {},
+  "error": {
+    "statusCode": 400,
+    "message": "Validation or request error"
+  }
+}
+```
+
 ## Property Search Parameters
 
 `GET /properties` accepts `query`, `township`, `province`, `propertyType`, `minPrice`, `maxPrice`, `bedrooms`, `bathrooms`, `page`, `pageSize`, and `sort`.
