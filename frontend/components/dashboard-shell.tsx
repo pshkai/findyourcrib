@@ -2,23 +2,25 @@
 
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { Building2, Heart, Inbox, LayoutDashboard, LoaderCircle, LockKeyhole, PlusCircle } from "lucide-react";
+import { Building2, Heart, Inbox, LayoutDashboard, LoaderCircle, LockKeyhole, PlusCircle, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./auth-provider";
 import { SiteHeader } from "./site-header";
 
-type DashboardSection = "overview" | "listings" | "inquiries" | "favorites" | "new-listing";
+type DashboardSection = "overview" | "listings" | "inquiries" | "favorites" | "new-listing" | "admin-review";
 
 const navItems = [
   { section: "overview", label: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { section: "listings", label: "Listings", href: "/dashboard/listings", icon: Building2 },
   { section: "inquiries", label: "Inquiries", href: "/dashboard/inquiries", icon: Inbox },
-  { section: "favorites", label: "Favorites", href: "/dashboard/favorites", icon: Heart }
+  { section: "favorites", label: "Favorites", href: "/dashboard/favorites", icon: Heart },
+  { section: "admin-review", label: "Review queue", href: "/admin", icon: ShieldCheck, adminOnly: true }
 ] satisfies Array<{
   section: DashboardSection;
   label: string;
   href: string;
   icon: typeof LayoutDashboard;
+  adminOnly?: boolean;
 }>;
 
 interface DashboardShellProps {
@@ -26,12 +28,13 @@ interface DashboardShellProps {
   eyebrow?: string;
   title: string;
   description?: string;
+  requireAdmin?: boolean;
   children: ReactNode;
 }
 
-export function DashboardShell({ active, eyebrow = "Workspace", title, description, children }: DashboardShellProps) {
+export function DashboardShell({ active, eyebrow = "Workspace", title, description, requireAdmin = false, children }: DashboardShellProps) {
   const router = useRouter();
-  const { status } = useAuth();
+  const { status, user } = useAuth();
 
   useEffect(() => {
     if (status === "guest") {
@@ -68,6 +71,21 @@ export function DashboardShell({ active, eyebrow = "Workspace", title, descripti
     );
   }
 
+  if (requireAdmin && user?.role !== "ADMIN") {
+    return (
+      <>
+        <SiteHeader />
+        <main className="dashboard-shell">
+          <section className="page-shell dashboard-auth-state">
+            <LockKeyhole size={24} />
+            Admin access is required for this workspace.
+            <a href="/dashboard">Back to dashboard</a>
+          </section>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <SiteHeader />
@@ -79,7 +97,7 @@ export function DashboardShell({ active, eyebrow = "Workspace", title, descripti
               <h2>Control room</h2>
             </div>
             <nav>
-              {navItems.map((item) => {
+              {navItems.filter((item) => !item.adminOnly || user?.role === "ADMIN").map((item) => {
                 const Icon = item.icon;
                 const isActive = item.section === active;
 

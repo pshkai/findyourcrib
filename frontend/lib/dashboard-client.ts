@@ -29,6 +29,12 @@ interface ApiProperty {
     inquiries?: number;
     favorites?: number;
   };
+  agent?: {
+    id: string;
+    name: string;
+    email?: string;
+    phoneNumber?: string | null;
+  };
 }
 
 export interface InquirySummary {
@@ -52,6 +58,15 @@ export interface FavoriteSummary {
   createdAt: string;
   property: PropertySummary;
 }
+
+export type AdminReviewListing = ReturnType<typeof mapProperty> & {
+  agent?: {
+    id: string;
+    name: string;
+    email?: string;
+    phoneNumber?: string | null;
+  };
+};
 
 function toNumber(value: string | number | null | undefined) {
   if (value === null || value === undefined) {
@@ -187,4 +202,36 @@ export async function updateListing(
   });
 
   return mapProperty(envelope.data);
+}
+
+function mapAdminReviewListing(property: ApiProperty): AdminReviewListing {
+  return {
+    ...mapProperty(property),
+    agent: property.agent
+  };
+}
+
+export async function getAdminReviewQueue() {
+  const envelope = await authorizedRequest<Envelope<ApiProperty[]>>("/admin/properties/review");
+  return envelope.data.map(mapAdminReviewListing);
+}
+
+export async function verifyAdminListing(propertyId: string) {
+  const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/admin/properties/${propertyId}/verify`, { method: "POST" });
+  return mapAdminReviewListing(envelope.data);
+}
+
+export async function rejectAdminListing(propertyId: string) {
+  const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/admin/properties/${propertyId}/reject`, { method: "POST" });
+  return mapAdminReviewListing(envelope.data);
+}
+
+export async function featureAdminListing(propertyId: string) {
+  const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/admin/properties/${propertyId}/feature`, { method: "POST" });
+  return mapAdminReviewListing(envelope.data);
+}
+
+export async function hideAdminListing(propertyId: string) {
+  const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/admin/properties/${propertyId}/hide`, { method: "POST" });
+  return mapAdminReviewListing(envelope.data);
 }

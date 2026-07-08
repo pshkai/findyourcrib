@@ -963,6 +963,45 @@
   margin-top: 14px;
 }
 
+.admin-review-row {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 190px 1fr;
+  overflow: hidden;
+  padding: 14px;
+}
+
+.admin-review-image {
+  aspect-ratio: 4 / 3;
+  background: var(--surface);
+  background-position: center;
+  background-size: cover;
+  border-radius: 6px;
+}
+
+.admin-review-body {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-review-body h2 {
+  font-size: 1.08rem;
+  margin: 0;
+}
+
+.admin-review-body p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.admin-review-actions {
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
 .favorite-item {
   display: grid;
   gap: 10px;
@@ -1186,7 +1225,8 @@
 
   .property-detail-layout,
   .detail-facts,
-  .detail-gallery {
+  .detail-gallery,
+  .admin-review-row {
     grid-template-columns: 1fr;
   }
 
