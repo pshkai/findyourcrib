@@ -5,6 +5,7 @@ import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Roles } from "../auth/roles.decorator";
 import { RolesGuard } from "../auth/roles.guard";
 import type { AuthUser } from "../auth/auth.types";
+import { RateLimit } from "../rate-limit.decorator";
 import { CreateInquiryDto, UpdateInquiryStatusDto } from "./dto";
 import { InquiriesService } from "./inquiries.service";
 
@@ -12,6 +13,7 @@ import { InquiriesService } from "./inquiries.service";
 export class InquiriesController {
   constructor(private readonly inquiriesService: InquiriesService) {}
 
+  @RateLimit({ limit: 6, windowMs: 60_000 })
   @Post("inquiries")
   create(@Body() dto: CreateInquiryDto, @Req() request: { user?: AuthUser }) {
     return this.inquiriesService.create(dto, request.user?.sub);

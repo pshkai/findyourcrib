@@ -12,6 +12,12 @@ Base path: `/api/v1`
 - `POST /auth/register`
 - `POST /auth/login`
 
+Rate limits:
+
+- `POST /auth/register`: 5 requests per minute per IP.
+- `POST /auth/login`: 8 requests per minute per IP.
+- `POST /inquiries`: 6 requests per minute per IP.
+
 ## Authenticated
 
 - `GET /auth/me`
