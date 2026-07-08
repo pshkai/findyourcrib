@@ -1,5 +1,7 @@
 # FindYourCrib
 
+[![CI](https://github.com/pshkai/findyourcrib/actions/workflows/ci.yml/badge.svg)](https://github.com/pshkai/findyourcrib/actions/workflows/ci.yml)
+
 FindYourCrib is a property discovery and listing platform for renters, agents, and owners in Thailand.
 
 The project is restarted as a clean monorepo after reviewing the previous implementation. The old repo had useful product ideas, but also committed dependencies, uploaded files, case-colliding component names, and too little documentation for solo maintenance.
