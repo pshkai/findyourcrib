@@ -32,22 +32,23 @@ export function getAccessToken() {
 }
 
 export function clearAccessToken() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
   window.localStorage.removeItem(TOKEN_KEY);
 }
 
 export async function authorizedRequest<T>(path: string, init?: RequestInit) {
   const token = getAccessToken();
 
-  if (!token) {
-    throw new Error("You need to login first");
-  }
-
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
+    credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...init?.headers
     }
   });
@@ -68,6 +69,7 @@ export async function getCurrentUser() {
 async function authRequest(path: string, payload: Record<string, unknown>) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
+    credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
@@ -81,7 +83,7 @@ async function authRequest(path: string, payload: Record<string, unknown>) {
   }
 
   const envelope = (await response.json()) as AuthResponse;
-  window.localStorage.setItem(TOKEN_KEY, envelope.data.accessToken);
+  clearAccessToken();
   return envelope.data.user;
 }
 
@@ -97,4 +99,15 @@ export function register(payload: {
   role: "RENTER" | "AGENT" | "OWNER";
 }) {
   return authRequest("/auth/register", payload);
+}
+
+export async function logoutRequest() {
+  await fetch(`${API_BASE_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      Accept: "application/json"
+    }
+  });
+  clearAccessToken();
 }

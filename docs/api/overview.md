@@ -11,12 +11,19 @@ Base path: `/api/v1`
 - `POST /inquiries`
 - `POST /auth/register`
 - `POST /auth/login`
+- `POST /auth/logout`
 
 Rate limits:
 
 - `POST /auth/register`: 5 requests per minute per IP.
 - `POST /auth/login`: 8 requests per minute per IP.
 - `POST /inquiries`: 6 requests per minute per IP.
+
+Auth notes:
+
+- `POST /auth/register` and `POST /auth/login` return the access token for API clients and set an httpOnly `fyc_session` cookie for browser clients.
+- Authenticated browser requests should send credentials. Non-browser API clients can continue using `Authorization: Bearer <token>`.
+- `POST /auth/logout` clears the browser session cookie.
 
 ## Authenticated
 
@@ -90,7 +97,7 @@ Search responses include `meta.page`, `meta.pageSize`, and `meta.total` for pagi
 
 ## Implemented in Current Backend Slice
 
-- Auth: `POST /auth/register`, `POST /auth/login`, `GET /auth/me`.
+- Auth: `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, bearer-token auth, and httpOnly browser session cookies.
 - Public property read: `GET /properties`, `GET /properties/featured`, `GET /properties/:id`.
 - Agent property management: create, list own, update own, delete own, and confirm availability.
 - Agent media: ordered listing galleries via image URLs, with cover-image compatibility.

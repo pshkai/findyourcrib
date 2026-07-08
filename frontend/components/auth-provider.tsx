@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { clearAccessToken, getAccessToken, getCurrentUser, type AuthUser } from "../lib/auth-client";
+import { clearAccessToken, getCurrentUser, logoutRequest, type AuthUser } from "../lib/auth-client";
 
 type AuthStatus = "loading" | "authenticated" | "guest";
 
@@ -19,12 +19,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
 
   async function refreshUser() {
-    if (!getAccessToken()) {
-      setUser(null);
-      setStatus("guest");
-      return;
-    }
-
     setStatus("loading");
 
     try {
@@ -39,6 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   function logout() {
+    void logoutRequest();
     clearAccessToken();
     setUser(null);
     setStatus("guest");

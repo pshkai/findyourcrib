@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Res, UseGuards } from "@nestjs/common";
+import type { Response } from "express";
 import { CurrentUser } from "./current-user.decorator";
 import { AuthService } from "./auth.service";
 import type { AuthUser } from "./auth.types";
+import { clearAuthCookie, setAuthCookie } from "./auth-cookie";
 import { LoginDto, RegisterDto } from "./dto";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { RateLimit } from "../rate-limit.decorator";
@@ -12,14 +14,24 @@ export class AuthController {
 
   @RateLimit({ limit: 5, windowMs: 60_000 })
   @Post("register")
-  register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) response: Response) {
+    const session = await this.authService.register(dto);
+    setAuthCookie(response, session.data.accessToken);
+    return session;
   }
 
   @RateLimit({ limit: 8, windowMs: 60_000 })
   @Post("login")
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) response: Response) {
+    const session = await this.authService.login(dto);
+    setAuthCookie(response, session.data.accessToken);
+    return session;
+  }
+
+  @Post("logout")
+  logout(@Res({ passthrough: true }) response: Response) {
+    clearAuthCookie(response);
+    return { data: null, meta: {}, error: null };
   }
 
   @UseGuards(JwtAuthGuard)
