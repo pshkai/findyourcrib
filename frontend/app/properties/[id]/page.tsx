@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bath, BedDouble, CheckCircle2, MapPin, Ruler, TrainFront } from "lucide-react";
 import { FavoriteButton } from "../../../components/favorite-button";
 import { InquiryForm } from "../../../components/inquiry-form";
+import { SiteFooter } from "../../../components/site-footer";
 import { SiteHeader } from "../../../components/site-header";
 import { getPropertyDetail } from "../../../lib/api";
 import { absoluteUrl } from "../../../lib/site";
@@ -117,6 +118,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
           <InquiryForm propertyId={property.id} />
         </aside>
       </section>
+      <SiteFooter />
     </main>
   );
 }

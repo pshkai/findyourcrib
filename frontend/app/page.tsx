@@ -1,5 +1,6 @@
 import { Building2, MapPinned, ShieldCheck, SlidersHorizontal, Sparkles, Search } from "lucide-react";
 import { PropertyCard } from "../components/property-card";
+import { SiteFooter } from "../components/site-footer";
 import { SiteHeader } from "../components/site-header";
 import { getFeaturedProperties } from "../lib/api";
 import "./page.css";
@@ -100,6 +101,7 @@ export default async function Home() {
           ))}
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }

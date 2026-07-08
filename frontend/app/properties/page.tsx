@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PropertyCard } from "../../components/property-card";
+import { SiteFooter } from "../../components/site-footer";
 import { SiteHeader } from "../../components/site-header";
 import { absoluteUrl } from "../../lib/site";
 import { searchProperties } from "../../lib/api";
@@ -132,6 +133,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           {meta.page < totalPages ? <a href={buildPageHref(params, meta.page + 1, pageSize)}>Next</a> : <span>Next</span>}
         </nav>
       </section>
+      <SiteFooter />
     </main>
   );
 }
