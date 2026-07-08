@@ -35,4 +35,5 @@ export interface PropertySummary {
   sizeSqm: number | null;
   isVerified: boolean;
   coverImageUrl: string | null;
+  imageUrls?: string[];
 }

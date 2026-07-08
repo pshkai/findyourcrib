@@ -9,7 +9,7 @@
 ## Experience Principles
 
 - The first screen is the property search experience, not a marketing splash.
-- Dense, scannable listing cards with price, location, size, beds, baths, verification, and image count.
+- Dense, scannable listing cards with price, location, size, beds, baths, verification, and strong listing imagery.
 - Mobile filters use a drawer; desktop filters stay visible.
 - Agent dashboard prioritizes actions: add listing, confirm availability, reply to inquiries, fix incomplete listings.
 
@@ -26,5 +26,5 @@
 
 ## Current Implementation Status
 
-- Done: API-aware home featured listings, API-aware property search with demo fallback, property detail and inquiry form, login/register screens wired to auth endpoints, dashboard navigation shell, authenticated listings/inquiries/favorites pages, and listing creation form.
-- Next: listing edit form, admin review UI, better auth persistence with secure cookies, and full browser QA against local backend.
+- Done: API-aware home featured listings, API-aware property search with demo fallback, property detail and inquiry form, login/register screens wired to auth endpoints, dashboard navigation shell, authenticated listings/inquiries/favorites pages, listing create/edit forms, gallery URL entry, and admin review UI.
+- Next: direct media upload storage, better auth persistence with secure cookies, and full browser QA against local backend.

@@ -24,7 +24,7 @@ interface ApiProperty {
   sizeSqm: string | number | null;
   status?: string;
   verificationStatus?: "PENDING" | "VERIFIED" | "REJECTED";
-  images?: Array<{ imageUrl: string }>;
+  images?: Array<{ imageUrl: string; altText?: string | null }>;
   _count?: {
     inquiries?: number;
     favorites?: number;
@@ -99,6 +99,7 @@ function mapProperty(property: ApiProperty): PropertySummary & {
     sizeSqm: toNumber(property.sizeSqm),
     isVerified: property.verificationStatus === "VERIFIED",
     coverImageUrl: property.images?.[0]?.imageUrl ?? null,
+    imageUrls: property.images?.map((image) => image.imageUrl) ?? [],
     status: property.status,
     verificationStatus: property.verificationStatus,
     inquiryCount: property._count?.inquiries,
@@ -171,6 +172,7 @@ export async function createListing(payload: {
   township: string;
   province: string;
   coverImageUrl?: string;
+  images?: Array<{ imageUrl: string; altText?: string }>;
 }) {
   const envelope = await authorizedRequest<Envelope<ApiProperty>>("/agent/properties", {
     method: "POST",
@@ -194,6 +196,7 @@ export async function updateListing(
     township: string;
     province: string;
     coverImageUrl?: string;
+    images?: Array<{ imageUrl: string; altText?: string }>;
   }
 ) {
   const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/agent/properties/${propertyId}`, {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, Save } from "lucide-react";
+import { Building2, Images, Save } from "lucide-react";
 import { createListing, updateListing } from "../lib/dashboard-client";
 import type { PropertySummary, PropertyType } from "@findyourcrib/shared";
 
@@ -38,7 +38,8 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       address: String(formData.get("address") ?? ""),
       township: String(formData.get("township") ?? ""),
       province: String(formData.get("province") ?? ""),
-      coverImageUrl: String(formData.get("coverImageUrl") ?? "") || undefined
+      coverImageUrl: String(formData.get("coverImageUrl") ?? "") || undefined,
+      images: parseImageUrls(String(formData.get("imageUrls") ?? ""))
     };
 
     try {
@@ -114,6 +115,17 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
         Cover image URL
         <input name="coverImageUrl" type="url" placeholder="https://..." defaultValue={listing?.coverImageUrl ?? ""} />
       </label>
+      <label className="wide image-url-field">
+        <span>
+          <Images size={16} />
+          Gallery image URLs
+        </span>
+        <textarea
+          name="imageUrls"
+          placeholder={"https://...\nhttps://..."}
+          defaultValue={(listing?.imageUrls?.length ? listing.imageUrls : listing?.coverImageUrl ? [listing.coverImageUrl] : []).join("\n")}
+        />
+      </label>
 
       {error ? <p className="auth-error wide">{error}</p> : null}
 
@@ -123,4 +135,17 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       </button>
     </form>
   );
+}
+
+function parseImageUrls(value: string) {
+  const urls = Array.from(
+    new Set(
+      value
+        .split(/\r?\n/)
+        .map((url) => url.trim())
+        .filter(Boolean)
+    )
+  );
+
+  return urls.map((imageUrl) => ({ imageUrl }));
 }

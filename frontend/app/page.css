@@ -1180,6 +1180,26 @@
   resize: vertical;
 }
 
+.listing-form .image-url-field {
+  background: var(--surface-soft);
+  border: 1px dashed color-mix(in srgb, var(--accent) 34%, var(--line));
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.listing-form .image-url-field span {
+  align-items: center;
+  color: var(--accent-strong);
+  display: inline-flex;
+  font-weight: 900;
+  gap: 7px;
+}
+
+.listing-form .image-url-field textarea {
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  min-height: 150px;
+}
+
 .property-detail-page {
   padding-bottom: 72px;
 }

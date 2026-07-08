@@ -7,9 +7,12 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  ArrayMaxSize,
+  IsArray,
   Max,
   Min,
-  MinLength
+  MinLength,
+  ValidateNested
 } from "class-validator";
 
 export enum PropertyTypeDto {
@@ -82,6 +85,15 @@ export class PropertySearchDto {
   pageSize = 20;
 }
 
+export class PropertyImageDto {
+  @IsUrl({ require_tld: false })
+  imageUrl!: string;
+
+  @IsOptional()
+  @IsString()
+  altText?: string;
+}
+
 export class CreatePropertyDto {
   @IsString()
   @MinLength(8)
@@ -148,6 +160,13 @@ export class CreatePropertyDto {
   @IsOptional()
   @IsUrl({ require_tld: false })
   coverImageUrl?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(12)
+  @ValidateNested({ each: true })
+  @Type(() => PropertyImageDto)
+  images?: PropertyImageDto[];
 }
 
 export class UpdatePropertyDto extends PartialType(CreatePropertyDto) {}

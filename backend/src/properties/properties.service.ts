@@ -11,6 +11,7 @@ export class PropertiesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(agentId: string, dto: CreatePropertyDto) {
+    const images = this.imageCreateInput(dto);
     const property = await this.prisma.property.create({
       data: {
         title: dto.title,
@@ -31,13 +32,9 @@ export class PropertiesService {
         expiresAt: this.nextExpiry(),
         lastConfirmedAt: new Date(),
         agent: { connect: { id: agentId } },
-        images: dto.coverImageUrl
+        images: images
           ? {
-              create: {
-                imageUrl: dto.coverImageUrl,
-                displayOrder: 0,
-                altText: dto.title
-              }
+              create: images
             }
           : undefined
       },
@@ -250,17 +247,16 @@ export class PropertiesService {
         }
       });
 
-      if (dto.coverImageUrl !== undefined) {
-        await tx.propertyImage.deleteMany({ where: { propertyId: id, displayOrder: 0 } });
+      if (dto.coverImageUrl !== undefined || dto.images !== undefined) {
+        await tx.propertyImage.deleteMany({ where: { propertyId: id } });
 
-        if (dto.coverImageUrl) {
-          await tx.propertyImage.create({
-            data: {
-              propertyId: id,
-              imageUrl: dto.coverImageUrl,
-              displayOrder: 0,
-              altText: dto.title ?? property.title
-            }
+        const images = this.imageCreateInput(dto, property.title);
+        if (images?.length) {
+          await tx.propertyImage.createMany({
+            data: images.map((image) => ({
+              ...image,
+              propertyId: id
+            }))
           });
         }
       }
@@ -328,6 +324,31 @@ export class PropertiesService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
     return expiresAt;
+  }
+
+  private imageCreateInput(dto: Pick<CreatePropertyDto, "coverImageUrl" | "images"> & { title?: string }, fallbackTitle?: string) {
+    const seen = new Set<string>();
+    const imageUrls = [
+      ...(dto.coverImageUrl ? [{ imageUrl: dto.coverImageUrl.trim(), altText: dto.title ?? fallbackTitle }] : []),
+      ...(dto.images ?? []).map((image) => ({ imageUrl: image.imageUrl.trim(), altText: image.altText?.trim() || undefined }))
+    ].filter((image) => {
+      if (!image.imageUrl || seen.has(image.imageUrl)) {
+        return false;
+      }
+
+      seen.add(image.imageUrl);
+      return true;
+    });
+
+    if (!imageUrls.length) {
+      return undefined;
+    }
+
+    return imageUrls.map((image, index) => ({
+      imageUrl: image.imageUrl,
+      altText: image.altText || dto.title || fallbackTitle,
+      displayOrder: index
+    }));
   }
 
   private filterFallbackProperties(query: PropertySearchDto) {
