@@ -1,6 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+import helmet from "helmet";
 import { ApiExceptionFilter } from "./api-exception.filter";
 import { AppModule } from "./app.module";
 
@@ -14,6 +15,11 @@ async function bootstrap() {
     .filter(Boolean);
   const port = configService.getOrThrow<number>("PORT");
 
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" }
+    })
+  );
   app.setGlobalPrefix("api/v1");
   app.enableCors({
     origin: allowedOrigins,

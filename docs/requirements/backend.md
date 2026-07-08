@@ -31,3 +31,4 @@
 - Backend startup validates `PORT`, `DATABASE_URL`, `FRONTEND_URL`, and JWT settings before accepting traffic.
 - Production requires `DATABASE_URL` and a private `JWT_SECRET`; local development falls back to safe local defaults.
 - Browser-origin write requests are restricted to configured `FRONTEND_URL` origins to protect cookie-authenticated sessions.
+- API responses include baseline security headers through Helmet.

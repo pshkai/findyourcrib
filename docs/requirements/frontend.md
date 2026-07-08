@@ -12,6 +12,7 @@
 - Dense, scannable listing cards with price, location, size, beds, baths, verification, and strong listing imagery.
 - Mobile filters use a drawer; desktop filters stay visible.
 - Agent dashboard prioritizes actions: add listing, confirm availability, reply to inquiries, fix incomplete listings.
+- Public pages send baseline browser security headers for framing, content sniffing, referrer behavior, and unused device permissions.
 
 ## Pages
 
