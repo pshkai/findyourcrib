@@ -33,3 +33,4 @@
 - Browser-origin write requests are restricted to configured `FRONTEND_URL` origins to protect cookie-authenticated sessions.
 - API responses include baseline security headers through Helmet.
 - Health checks expose liveness at `/api/v1/health` and database readiness at `/api/v1/health/ready`.
+- API requests emit method, path, status, duration, and client IP logs for production debugging.

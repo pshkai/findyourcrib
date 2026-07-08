@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthModule } from "./auth/auth.module";
@@ -10,6 +10,7 @@ import { InquiriesModule } from "./inquiries/inquiries.module";
 import { PrismaModule } from "./prisma.module";
 import { PropertiesModule } from "./properties/properties.module";
 import { RateLimitGuard } from "./rate-limit.guard";
+import { RequestLoggerMiddleware } from "./request-logger.middleware";
 import { UsersModule } from "./users/users.module";
 
 @Module({
@@ -28,4 +29,8 @@ import { UsersModule } from "./users/users.module";
     { provide: APP_GUARD, useClass: RateLimitGuard }
   ]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes("*");
+  }
+}
