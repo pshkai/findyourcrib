@@ -111,6 +111,24 @@ export class PropertiesService {
     return { data, meta: {}, error: null };
   }
 
+  async findOwned(id: string, agentId: string) {
+    await this.assertOwnership(id, agentId);
+
+    const data = await this.prisma.property.findUnique({
+      where: { id },
+      include: {
+        images: { orderBy: { displayOrder: "asc" } },
+        _count: { select: { inquiries: true, favorites: true } }
+      }
+    });
+
+    if (!data) {
+      throw new NotFoundException("Property not found");
+    }
+
+    return { data, meta: {}, error: null };
+  }
+
   async featured() {
     try {
       const data = await this.prisma.property.findMany({
@@ -209,25 +227,50 @@ export class PropertiesService {
   async updateOwned(id: string, agentId: string, dto: UpdatePropertyDto) {
     await this.assertOwnership(id, agentId);
 
-    const data = await this.prisma.property.update({
-      where: { id },
-      data: {
-        title: dto.title,
-        description: dto.description,
-        price: dto.price,
-        propertyType: dto.propertyType,
-        bedrooms: dto.bedrooms,
-        bathrooms: dto.bathrooms,
-        sizeSqm: dto.sizeSqm,
-        address: dto.address,
-        township: dto.township,
-        province: dto.province,
-        latitude: dto.latitude,
-        longitude: dto.longitude,
-        nearestStation: dto.nearestStation,
-        distanceToStation: dto.distanceToStation,
-        verificationStatus: "PENDING"
+    const data = await this.prisma.$transaction(async (tx) => {
+      const property = await tx.property.update({
+        where: { id },
+        data: {
+          title: dto.title,
+          description: dto.description,
+          price: dto.price,
+          propertyType: dto.propertyType,
+          bedrooms: dto.bedrooms,
+          bathrooms: dto.bathrooms,
+          sizeSqm: dto.sizeSqm,
+          address: dto.address,
+          township: dto.township,
+          province: dto.province,
+          latitude: dto.latitude,
+          longitude: dto.longitude,
+          nearestStation: dto.nearestStation,
+          distanceToStation: dto.distanceToStation,
+          verificationStatus: "PENDING"
+        }
+      });
+
+      if (dto.coverImageUrl !== undefined) {
+        await tx.propertyImage.deleteMany({ where: { propertyId: id, displayOrder: 0 } });
+
+        if (dto.coverImageUrl) {
+          await tx.propertyImage.create({
+            data: {
+              propertyId: id,
+              imageUrl: dto.coverImageUrl,
+              displayOrder: 0,
+              altText: dto.title ?? property.title
+            }
+          });
+        }
       }
+
+      return tx.property.findUniqueOrThrow({
+        where: { id },
+        include: {
+          images: { orderBy: { displayOrder: "asc" }, take: 1 },
+          _count: { select: { inquiries: true, favorites: true } }
+        }
+      });
     });
 
     return { data, meta: {}, error: null };

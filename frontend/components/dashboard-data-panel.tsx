@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Building2, CheckCircle2, Heart, Inbox, LoaderCircle, Trash2 } from "lucide-react";
+import { Building2, CheckCircle2, Heart, Inbox, LoaderCircle, Pencil, Trash2 } from "lucide-react";
 import {
   confirmListingAvailability,
   deleteListing,
@@ -155,6 +155,10 @@ export function DashboardDataPanel({ kind }: DashboardDataPanelProps) {
                 </div>
                 <span>{listing.inquiryCount ?? 0} inquiries</span>
                 <div className="dashboard-row-actions">
+                  <a href={`/dashboard/listings/${listing.id}/edit`}>
+                    <Pencil size={16} />
+                    Edit
+                  </a>
                   <button disabled={isBusy} type="button" onClick={() => void onConfirmListing(listing.id)}>
                     <CheckCircle2 size={16} />
                     {isBusy ? "Saving" : "Confirm"}

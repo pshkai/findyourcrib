@@ -12,8 +12,10 @@ interface Envelope<T> {
 interface ApiProperty {
   id: string;
   title: string;
+  description?: string;
   price: string | number;
   currency?: "THB";
+  address?: string;
   township: string;
   province: string;
   propertyType: PropertyType;
@@ -59,6 +61,8 @@ function toNumber(value: string | number | null | undefined) {
 }
 
 function mapProperty(property: ApiProperty): PropertySummary & {
+  description?: string;
+  address?: string;
   status?: string;
   verificationStatus?: string;
   inquiryCount?: number;
@@ -67,8 +71,10 @@ function mapProperty(property: ApiProperty): PropertySummary & {
   return {
     id: property.id,
     title: property.title,
+    description: property.description,
     price: toNumber(property.price) ?? 0,
     currency: property.currency ?? "THB",
+    address: property.address,
     township: property.township,
     province: property.province,
     propertyType: property.propertyType,
@@ -87,6 +93,11 @@ function mapProperty(property: ApiProperty): PropertySummary & {
 export async function getAgentListings() {
   const envelope = await authorizedRequest<Envelope<ApiProperty[]>>("/agent/properties");
   return envelope.data.map(mapProperty);
+}
+
+export async function getAgentListing(propertyId: string) {
+  const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/agent/properties/${propertyId}`);
+  return mapProperty(envelope.data);
 }
 
 export async function getAgentInquiries() {
@@ -134,6 +145,30 @@ export async function createListing(payload: {
 }) {
   const envelope = await authorizedRequest<Envelope<ApiProperty>>("/agent/properties", {
     method: "POST",
+    body: JSON.stringify(payload)
+  });
+
+  return mapProperty(envelope.data);
+}
+
+export async function updateListing(
+  propertyId: string,
+  payload: {
+    title: string;
+    description: string;
+    price: number;
+    propertyType: PropertyType;
+    bedrooms?: number;
+    bathrooms?: number;
+    sizeSqm?: number;
+    address: string;
+    township: string;
+    province: string;
+    coverImageUrl?: string;
+  }
+) {
+  const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/agent/properties/${propertyId}`, {
+    method: "PATCH",
     body: JSON.stringify(payload)
   });
 

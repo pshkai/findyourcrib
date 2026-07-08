@@ -840,6 +840,7 @@
   gap: 8px;
 }
 
+.dashboard-row-actions a,
 .dashboard-row-actions button {
   align-items: center;
   background: var(--surface-strong);
@@ -854,7 +855,11 @@
   padding: 0 10px;
 }
 
-.dashboard-row-actions button:first-child {
+.dashboard-row-actions a {
+  color: var(--ink);
+}
+
+.dashboard-row-actions button:first-of-type {
   background: var(--accent-soft);
   border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
   color: var(--accent-strong);

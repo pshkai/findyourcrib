@@ -19,6 +19,11 @@ export class AgentPropertiesController {
     return this.propertiesService.findMine(user.sub);
   }
 
+  @Get(":id")
+  findOwned(@CurrentUser() user: AuthUser, @Param("id") id: string) {
+    return this.propertiesService.findOwned(id, user.sub);
+  }
+
   @Post()
   create(@CurrentUser() user: AuthUser, @Body() dto: CreatePropertyDto) {
     return this.propertiesService.create(user.sub, dto);
