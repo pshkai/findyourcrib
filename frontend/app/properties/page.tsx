@@ -13,11 +13,15 @@ interface PropertiesPageProps {
     bedrooms?: string;
     bathrooms?: string;
     sort?: PropertySort;
+    page?: string;
+    pageSize?: string;
   }>;
 }
 
 export default async function PropertiesPage({ searchParams }: PropertiesPageProps) {
   const params = await searchParams;
+  const page = positiveNumber(params.page, 1);
+  const pageSize = positiveNumber(params.pageSize, 12);
   const { properties, meta } = await searchProperties({
     query: params.query,
     propertyType: params.propertyType,
@@ -25,9 +29,14 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
     maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
     bedrooms: params.bedrooms ? Number(params.bedrooms) : undefined,
     bathrooms: params.bathrooms ? Number(params.bathrooms) : undefined,
-    sort: params.sort ?? "featured"
+    sort: params.sort ?? "featured",
+    page,
+    pageSize
   });
   const isFallback = Boolean(meta.fallback);
+  const totalPages = Math.max(1, Math.ceil(meta.total / meta.pageSize));
+  const resultStart = meta.total === 0 ? 0 : (meta.page - 1) * meta.pageSize + 1;
+  const resultEnd = Math.min(meta.total, meta.page * meta.pageSize);
 
   return (
     <main>
@@ -38,7 +47,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             <p>Search results</p>
             <h1>Browse verified homes</h1>
           </div>
-          {isFallback ? <span>Showing demo listings until the API is running</span> : <span>{properties.length} homes ready to compare</span>}
+          {isFallback ? <span>Showing demo listings until the API is running</span> : <span>{meta.total} homes ready to compare</span>}
         </div>
       </section>
 
@@ -74,15 +83,60 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             <option value="price_asc">Price low to high</option>
             <option value="price_desc">Price high to low</option>
           </select>
+          <select name="pageSize" defaultValue={String(pageSize)}>
+            <option value="12">12 per page</option>
+            <option value="24">24 per page</option>
+            <option value="36">36 per page</option>
+          </select>
+          <input type="hidden" name="page" value="1" />
           <button type="submit">Apply</button>
         </form>
 
-        <div className="listing-grid" style={{ marginTop: 24 }}>
-          {properties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
+        <div className="results-summary">
+          <span>
+            Showing {resultStart}-{resultEnd} of {meta.total}
+          </span>
+          <span>
+            Page {meta.page} of {totalPages}
+          </span>
         </div>
+
+        {properties.length > 0 ? (
+          <div className="listing-grid" style={{ marginTop: 18 }}>
+            {properties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        ) : (
+          <div className="dashboard-state results-empty">No homes match these filters yet.</div>
+        )}
+
+        <nav className="pagination" aria-label="Property result pages">
+          {meta.page > 1 ? <a href={buildPageHref(params, meta.page - 1, pageSize)}>Previous</a> : <span>Previous</span>}
+          <strong>{meta.page}</strong>
+          {meta.page < totalPages ? <a href={buildPageHref(params, meta.page + 1, pageSize)}>Next</a> : <span>Next</span>}
+        </nav>
       </section>
     </main>
   );
+}
+
+function positiveNumber(value: string | undefined, fallback: number) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function buildPageHref(params: Awaited<PropertiesPageProps["searchParams"]>, page: number, pageSize: number) {
+  const nextParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value && key !== "page") {
+      nextParams.set(key, value);
+    }
+  }
+
+  nextParams.set("page", String(page));
+  nextParams.set("pageSize", String(pageSize));
+
+  return `/properties?${nextParams.toString()}`;
 }

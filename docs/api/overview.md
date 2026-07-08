@@ -54,6 +54,8 @@ Base path: `/api/v1`
 
 Sort options: `featured`, `newest`, `price_asc`, `price_desc`.
 
+Search responses include `meta.page`, `meta.pageSize`, and `meta.total` for pagination.
+
 ## Implemented in Current Backend Slice
 
 - Auth: `POST /auth/register`, `POST /auth/login`, `GET /auth/me`.

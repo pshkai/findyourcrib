@@ -733,8 +733,59 @@
 .results-filters {
   display: grid;
   gap: 12px;
-  grid-template-columns: 1.4fr 1fr 0.75fr 0.75fr 0.7fr 0.7fr 1fr auto;
+  grid-template-columns: 1.4fr 1fr 0.75fr 0.75fr 0.7fr 0.7fr 1fr 0.9fr auto;
   padding: 14px;
+}
+
+.results-summary,
+.pagination {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.results-summary {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 18px;
+}
+
+.pagination {
+  margin-top: 28px;
+}
+
+.pagination a,
+.pagination span,
+.pagination strong {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  display: inline-flex;
+  font-weight: 900;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 42px;
+  padding: 0 14px;
+}
+
+.pagination a {
+  background: var(--surface-strong);
+  color: var(--accent-strong);
+}
+
+.pagination span {
+  color: var(--muted);
+  opacity: 0.62;
+}
+
+.pagination strong {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.results-empty {
+  margin-top: 18px;
 }
 
 .auth-page {
@@ -1272,7 +1323,9 @@
   .section-heading,
   .dashboard-kicker,
   .dashboard-panel-header,
-  .results-header {
+  .results-header,
+  .results-summary,
+  .pagination {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;

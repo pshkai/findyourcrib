@@ -10,6 +10,13 @@ interface ApiEnvelope<T> {
   error?: unknown;
 }
 
+export interface SearchMeta {
+  page: number;
+  pageSize: number;
+  total: number;
+  fallback?: boolean;
+}
+
 interface ApiProperty {
   id: string;
   title: string;
@@ -151,14 +158,28 @@ export async function searchProperties(params: PropertySearchParams) {
     });
     return {
       properties: envelope.data.map(mapProperty),
-      meta: envelope.meta ?? {}
+      meta: normalizeSearchMeta(envelope.meta, params)
     };
   } catch {
     return {
       properties: featuredProperties,
-      meta: { fallback: true }
+      meta: {
+        page: params.page ?? 1,
+        pageSize: params.pageSize ?? featuredProperties.length,
+        total: featuredProperties.length,
+        fallback: true
+      } satisfies SearchMeta
     };
   }
+}
+
+function normalizeSearchMeta(meta: Record<string, unknown> | undefined, params: PropertySearchParams): SearchMeta {
+  return {
+    page: typeof meta?.page === "number" ? meta.page : params.page ?? 1,
+    pageSize: typeof meta?.pageSize === "number" ? meta.pageSize : params.pageSize ?? 20,
+    total: typeof meta?.total === "number" ? meta.total : 0,
+    fallback: Boolean(meta?.fallback)
+  };
 }
 
 export async function getPropertyDetail(id: string) {
