@@ -401,6 +401,65 @@
     border-color 0.25s ease;
 }
 
+.favorite-control {
+  position: relative;
+  z-index: 2;
+}
+
+.favorite-control-card {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
+.favorite-control button {
+  align-items: center;
+  background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 900;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 12px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.favorite-control button:hover {
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
+  color: var(--accent-strong);
+  transform: translateY(-1px);
+}
+
+.favorite-control button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 36%, var(--line));
+  color: var(--accent-strong);
+}
+
+.favorite-control button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.favorite-control span {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: #be123c;
+  display: block;
+  font-size: 0.76rem;
+  margin-top: 6px;
+  max-width: 220px;
+  padding: 6px 8px;
+}
+
 .property-card:hover {
   border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
   box-shadow: var(--shadow);
@@ -952,6 +1011,23 @@
   display: flex;
   gap: 8px;
   margin: 0;
+}
+
+.property-hero-content .favorite-control-detail {
+  margin-top: 24px;
+}
+
+.property-hero-content .favorite-control-detail button {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.26);
+  color: white;
+  min-height: 44px;
+  padding: 0 16px;
+}
+
+.property-hero-content .favorite-control-detail button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .property-detail-layout {

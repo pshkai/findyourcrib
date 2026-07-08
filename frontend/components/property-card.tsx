@@ -1,5 +1,6 @@
 import { Bath, BedDouble, CheckCircle2, MapPin, Ruler } from "lucide-react";
 import type { PropertySummary } from "@findyourcrib/shared";
+import { FavoriteButton } from "./favorite-button";
 
 const formatter = new Intl.NumberFormat("en-TH", {
   style: "currency",
@@ -10,6 +11,7 @@ const formatter = new Intl.NumberFormat("en-TH", {
 export function PropertyCard({ property }: { property: PropertySummary }) {
   return (
     <article className="property-card">
+      <FavoriteButton propertyId={property.id} />
       <div
         className="property-image"
         style={{ backgroundImage: property.coverImageUrl ? `url(${property.coverImageUrl})` : undefined }}

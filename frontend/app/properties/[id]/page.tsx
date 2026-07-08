@@ -1,4 +1,5 @@
 import { Bath, BedDouble, CheckCircle2, MapPin, Ruler, TrainFront } from "lucide-react";
+import { FavoriteButton } from "../../../components/favorite-button";
 import { InquiryForm } from "../../../components/inquiry-form";
 import { SiteHeader } from "../../../components/site-header";
 import { getPropertyDetail } from "../../../lib/api";
@@ -30,6 +31,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
             <MapPin size={18} />
             {property.address || `${property.township}, ${property.province}`}
           </p>
+          <FavoriteButton propertyId={property.id} variant="detail" />
         </div>
       </section>
 

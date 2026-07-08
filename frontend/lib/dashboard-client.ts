@@ -118,6 +118,10 @@ export async function removeFavorite(propertyId: string) {
   await authorizedRequest(`/favorites/${propertyId}`, { method: "DELETE" });
 }
 
+export async function addFavorite(propertyId: string) {
+  await authorizedRequest(`/favorites/${propertyId}`, { method: "POST" });
+}
+
 export async function confirmListingAvailability(propertyId: string) {
   const envelope = await authorizedRequest<Envelope<ApiProperty>>(`/agent/properties/${propertyId}/confirm-availability`, {
     method: "POST"
