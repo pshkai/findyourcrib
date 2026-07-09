@@ -1339,6 +1339,36 @@
   opacity: 0.54;
 }
 
+.listing-readiness {
+  background: color-mix(in srgb, var(--surface-soft) 78%, var(--surface-strong));
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+}
+
+.listing-readiness span {
+  align-items: center;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 0.82rem;
+  font-weight: 900;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 11px;
+}
+
+.listing-readiness span.is-done {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 24%, var(--line));
+  color: var(--accent-strong);
+}
+
 .property-detail-page {
   padding-bottom: 72px;
 }

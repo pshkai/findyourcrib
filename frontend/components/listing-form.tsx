@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowDown, ArrowUp, Building2, ImagePlus, Save, Star, Trash2, UploadCloud } from "lucide-react";
+import { ArrowDown, ArrowUp, Building2, CheckCircle2, Circle, ImagePlus, Save, Star, Trash2, UploadCloud } from "lucide-react";
 import { createListing, updateListing, uploadPropertyImage } from "../lib/dashboard-client";
 import type { PropertySummary, PropertyType } from "@findyourcrib/shared";
 
@@ -20,11 +20,18 @@ interface ListingFormProps {
 
 export function ListingForm({ mode = "create", listing }: ListingFormProps) {
   const router = useRouter();
+  const [title, setTitle] = useState(listing?.title ?? "");
+  const [description, setDescription] = useState(listing?.description ?? "");
+  const [price, setPrice] = useState(listing?.price ? String(listing.price) : "");
+  const [bedrooms, setBedrooms] = useState(listing?.bedrooms ? String(listing.bedrooms) : "");
+  const [bathrooms, setBathrooms] = useState(listing?.bathrooms ? String(listing.bathrooms) : "");
+  const [sizeSqm, setSizeSqm] = useState(listing?.sizeSqm ? String(listing.sizeSqm) : "");
   const [imageUrls, setImageUrls] = useState(() =>
     listing?.imageUrls?.length ? listing.imageUrls : listing?.coverImageUrl ? [listing.coverImageUrl] : [""]
   );
   const coverIndex = firstFilledImageIndex(imageUrls);
   const filledImageCount = imageUrls.filter((url) => url.trim()).length;
+  const checks = listingReadinessChecks({ title, description, price, bedrooms, bathrooms, sizeSqm, imageCount: filledImageCount });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setSubmitting] = useState(false);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
@@ -47,6 +54,21 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       coverImageUrl: String(formData.get("coverImageUrl") ?? "") || undefined,
       images: parseImageUrls(imageUrls.join("\n"))
     };
+    const blockingErrors = listingReadinessChecks({
+      title: payload.title,
+      description: payload.description,
+      price: String(payload.price),
+      bedrooms: String(payload.bedrooms),
+      bathrooms: String(payload.bathrooms),
+      sizeSqm: String(payload.sizeSqm),
+      imageCount: payload.images.length
+    }).filter((check) => check.required && !check.done);
+
+    if (blockingErrors.length) {
+      setError(blockingErrors[0].error);
+      setSubmitting(false);
+      return;
+    }
 
     try {
       if (mode === "edit" && listing?.id) {
@@ -67,7 +89,7 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
     <form className="listing-form" action={onSubmit}>
       <label className="wide">
         Title
-        <input name="title" required minLength={8} placeholder="Sathorn skyline condo near BTS" defaultValue={listing?.title ?? ""} />
+        <input name="title" required minLength={8} placeholder="Sathorn skyline condo near BTS" value={title} onChange={(event) => setTitle(event.target.value)} />
       </label>
       <label className="wide">
         Description
@@ -76,12 +98,13 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
           required
           minLength={20}
           placeholder="Describe the property, building, commute, and contract basics."
-          defaultValue={listing?.description ?? ""}
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
         />
       </label>
       <label>
         Price
-        <input name="price" required inputMode="numeric" placeholder="42000" defaultValue={listing?.price ?? ""} />
+        <input name="price" required inputMode="numeric" placeholder="42000" value={price} onChange={(event) => setPrice(event.target.value)} />
       </label>
       <label>
         Type
@@ -95,15 +118,15 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       </label>
       <label>
         Bedrooms
-        <input name="bedrooms" inputMode="numeric" placeholder="2" defaultValue={listing?.bedrooms ?? ""} />
+        <input name="bedrooms" inputMode="numeric" placeholder="2" value={bedrooms} onChange={(event) => setBedrooms(event.target.value)} />
       </label>
       <label>
         Bathrooms
-        <input name="bathrooms" inputMode="numeric" placeholder="2" defaultValue={listing?.bathrooms ?? ""} />
+        <input name="bathrooms" inputMode="numeric" placeholder="2" value={bathrooms} onChange={(event) => setBathrooms(event.target.value)} />
       </label>
       <label>
         Size sqm
-        <input name="sizeSqm" inputMode="numeric" placeholder="72" defaultValue={listing?.sizeSqm ?? ""} />
+        <input name="sizeSqm" inputMode="numeric" placeholder="72" value={sizeSqm} onChange={(event) => setSizeSqm(event.target.value)} />
       </label>
       <label>
         Township
@@ -192,6 +215,15 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
         </div>
       </div>
 
+      <div className="wide listing-readiness">
+        {checks.map((check) => (
+          <span key={check.label} className={check.done ? "is-done" : undefined}>
+            {check.done ? <CheckCircle2 size={15} /> : <Circle size={15} />}
+            {check.label}
+          </span>
+        ))}
+      </div>
+
       {error ? <p className="auth-error wide">{error}</p> : null}
 
       <button className="wide" type="submit" disabled={isSubmitting}>
@@ -275,6 +307,55 @@ function galleryGuidance(imageCount: number) {
   }
 
   return "Upload or paste a cover image, then add room and building photos.";
+}
+
+function listingReadinessChecks(input: {
+  title: string;
+  description: string;
+  price: string;
+  bedrooms: string;
+  bathrooms: string;
+  sizeSqm: string;
+  imageCount: number;
+}) {
+  return [
+    {
+      done: input.title.trim().length >= 8,
+      error: "Add a clear title with at least 8 characters.",
+      label: "Clear title",
+      required: true
+    },
+    {
+      done: input.description.trim().length >= 80,
+      error: "Add a fuller description with at least 80 characters.",
+      label: "Useful description",
+      required: true
+    },
+    {
+      done: Number(input.price) > 0,
+      error: "Add a monthly price greater than 0.",
+      label: "Valid price",
+      required: true
+    },
+    {
+      done: Number(input.bedrooms) > 0 && Number(input.bathrooms) > 0 && Number(input.sizeSqm) > 0,
+      error: "Add bedrooms, bathrooms, and size before saving.",
+      label: "Rooms and size",
+      required: true
+    },
+    {
+      done: input.imageCount > 0,
+      error: "Add at least one listing image before saving.",
+      label: "Cover image",
+      required: true
+    },
+    {
+      done: input.imageCount >= 5,
+      error: "",
+      label: "Five-photo gallery",
+      required: false
+    }
+  ];
 }
 
 function firstFilledImageUrl(urls: string[]) {
