@@ -51,6 +51,8 @@ Seeded users share the password `Password123!`:
 
 ## Deployment Notes
 
+Detailed production steps live in `docs/deployment/production.md`.
+
 - Vercel should build the frontend with `npm run build --workspace frontend`.
 - Render should build the backend with `npm run build --workspace backend` and start it with `npm run start:prod --workspace backend`.
 - Render health checks can use `/api/v1/health` for process liveness or `/api/v1/health/ready` when database readiness should gate traffic.
