@@ -28,3 +28,10 @@ test("auth entry pages render usable forms", async ({ page }) => {
   await expect(page.getByLabel("Name")).toBeVisible();
   await expect(page.getByLabel("Account type")).toBeVisible();
 });
+
+test("missing routes render the custom not found state", async ({ page }) => {
+  await page.goto("/definitely-not-a-real-listing");
+
+  await expect(page.getByRole("heading", { name: "This page is not listed." })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Browse homes" })).toBeVisible();
+});

@@ -1404,6 +1404,99 @@
   color: var(--muted);
 }
 
+.system-state-page {
+  align-items: center;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-soft) 82%, transparent), transparent 50%),
+    linear-gradient(color-mix(in srgb, var(--line) 44%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--line) 44%, transparent) 1px, transparent 1px);
+  background-size: auto, 58px 58px, 58px 58px;
+  display: grid;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.system-state-panel {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 16px;
+  max-width: 620px;
+  padding: 28px;
+}
+
+.system-state-panel > span,
+.system-state-actions {
+  align-items: center;
+  display: flex;
+}
+
+.system-state-panel > span {
+  color: var(--warm);
+  font-size: 0.8rem;
+  font-weight: 900;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.system-state-panel h1 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1;
+  margin: 0;
+}
+
+.system-state-panel p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.system-state-actions {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.system-state-actions a,
+.system-state-actions button {
+  align-items: center;
+  background: var(--accent);
+  border: 0;
+  border-radius: 6px;
+  color: color-mix(in srgb, var(--page) 90%, white);
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 900;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+}
+
+.system-state-actions a + a {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.loading-mark {
+  align-items: center;
+  background: var(--accent-soft);
+  border-radius: 999px;
+  display: inline-flex;
+  height: 46px;
+  justify-content: center;
+  width: 46px;
+}
+
+.loading-mark span {
+  animation: spin 0.9s linear infinite;
+  border: 3px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-top-color: var(--accent-strong);
+  border-radius: 999px;
+  height: 24px;
+  width: 24px;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
