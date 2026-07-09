@@ -83,7 +83,10 @@ describe("PropertiesService", () => {
 
     await service.create("agent-1", {
       address: "123 Sathorn Road",
-      description: "Bright corner unit near the station",
+      bathrooms: 2,
+      bedrooms: 2,
+      description:
+        "Bright corner unit near the station with open living space, clear building access, and practical contract details for renters.",
       images: [
         { imageUrl: "https://cdn.findyourcrib.test/living.jpg", altText: "Living room" },
         { imageUrl: "https://cdn.findyourcrib.test/bedroom.jpg" }
@@ -91,6 +94,7 @@ describe("PropertiesService", () => {
       price: 42000,
       propertyType: PropertyTypeDto.CONDO,
       province: "Bangkok",
+      sizeSqm: 72,
       title: "Sathorn skyline condo",
       township: "Sathorn"
     });
@@ -115,6 +119,26 @@ describe("PropertiesService", () => {
         })
       })
     );
+  });
+
+  it("rejects listing creation without at least one image", async () => {
+    const { service } = createService();
+
+    await expect(
+      service.create("agent-1", {
+        address: "123 Sathorn Road",
+        bathrooms: 2,
+        bedrooms: 2,
+        description:
+          "Bright corner unit near the station with open living space, clear building access, and practical contract details for renters.",
+        price: 42000,
+        propertyType: PropertyTypeDto.CONDO,
+        province: "Bangkok",
+        sizeSqm: 72,
+        title: "Sathorn skyline condo",
+        township: "Sathorn"
+      })
+    ).rejects.toThrow("Add at least one listing image before saving");
   });
 
   it("replaces owned gallery images on update", async () => {

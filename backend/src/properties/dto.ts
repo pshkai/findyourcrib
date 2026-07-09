@@ -9,6 +9,7 @@ import {
   IsUrl,
   ArrayMaxSize,
   IsArray,
+  ArrayMinSize,
   Max,
   Min,
   MinLength,
@@ -100,34 +101,31 @@ export class CreatePropertyDto {
   title!: string;
 
   @IsString()
-  @MinLength(20)
+  @MinLength(80)
   description!: string;
 
   @Type(() => Number)
   @IsNumber()
-  @Min(0)
+  @Min(1)
   price!: number;
 
   @IsEnum(PropertyTypeDto)
   propertyType!: PropertyTypeDto;
 
-  @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @Min(0)
-  bedrooms?: number;
+  @Min(1)
+  bedrooms!: number;
 
-  @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @Min(0)
-  bathrooms?: number;
+  @Min(1)
+  bathrooms!: number;
 
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  @Min(0)
-  sizeSqm?: number;
+  @Min(1)
+  sizeSqm!: number;
 
   @IsString()
   address!: string;
@@ -163,6 +161,7 @@ export class CreatePropertyDto {
 
   @IsOptional()
   @IsArray()
+  @ArrayMinSize(1)
   @ArrayMaxSize(12)
   @ValidateNested({ each: true })
   @Type(() => PropertyImageDto)

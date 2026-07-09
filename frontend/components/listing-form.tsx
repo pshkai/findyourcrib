@@ -96,7 +96,7 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
         <textarea
           name="description"
           required
-          minLength={20}
+          minLength={80}
           placeholder="Describe the property, building, commute, and contract basics."
           value={description}
           onChange={(event) => setDescription(event.target.value)}

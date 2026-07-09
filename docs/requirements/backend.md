@@ -12,7 +12,7 @@
 - Auth: register, login, current user, role guards.
 - Password recovery: secure reset-token creation and consumption with SMTP email delivery.
 - Users: profile and agent public profile.
-- Properties: CRUD, search, verification, availability confirmation, media.
+- Properties: CRUD, search, verification, availability confirmation, media, and listing quality validation.
 - Media: signed Supabase Storage upload URLs for agent listing images.
 - Favorites: renter saved listings.
 - Inquiries: renter-to-agent contact workflow.
@@ -20,8 +20,8 @@
 
 ## Current Implementation Status
 
-- Done: JWT auth foundation, user service, public property search, featured properties, property detail, agent-owned property management, inquiry creation/inbox, favorites, admin moderation, and seed data.
-- Next: media upload workflow, migrations, e2e tests, refresh tokens, and frontend API integration.
+- Done: JWT auth foundation, user service, public property search, featured properties, property detail, agent-owned property management, listing quality validation, inquiry creation/inbox, favorites, admin moderation, media upload workflow, and seed data.
+- Next: migrations, e2e tests, refresh tokens, production monitoring, and frontend API integration hardening.
 
 ## Non-Functional Requirements
 

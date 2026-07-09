@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Prisma, VerificationStatus } from "@prisma/client";
 import { PrismaService } from "../prisma.service";
 import { CreatePropertyDto, PropertySearchDto, PropertySortDto, UpdatePropertyDto } from "./dto";
@@ -12,6 +12,7 @@ export class PropertiesService {
 
   async create(agentId: string, dto: CreatePropertyDto) {
     const images = this.imageCreateInput(dto);
+    this.assertHasListingImage(images);
     const property = await this.prisma.property.create({
       data: {
         title: dto.title,
@@ -251,6 +252,7 @@ export class PropertiesService {
         await tx.propertyImage.deleteMany({ where: { propertyId: id } });
 
         const images = this.imageCreateInput(dto, property.title);
+        this.assertHasListingImage(images);
         if (images?.length) {
           await tx.propertyImage.createMany({
             data: images.map((image) => ({
@@ -349,6 +351,12 @@ export class PropertiesService {
       altText: image.altText || dto.title || fallbackTitle,
       displayOrder: index
     }));
+  }
+
+  private assertHasListingImage(images: ReturnType<PropertiesService["imageCreateInput"]>) {
+    if (!images?.length) {
+      throw new BadRequestException("Add at least one listing image before saving");
+    }
   }
 
   private filterFallbackProperties(query: PropertySearchDto) {
