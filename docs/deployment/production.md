@@ -22,6 +22,9 @@ This runbook keeps Vercel, Render, and Supabase changes repeatable.
 - `SMTP_USER`: SMTP username when required by the provider.
 - `SMTP_PASS`: SMTP password or API key when required by the provider.
 - `SMTP_FROM`: verified sender, for example `FindYourCrib <support@example.com>`.
+- `SUPABASE_URL`: Supabase project URL.
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key, backend only.
+- `SUPABASE_STORAGE_BUCKET`: public bucket for property images, for example `property-media`.
 
 ## Build and Start Commands
 
@@ -63,4 +66,5 @@ Use readiness when Render should avoid routing traffic until Supabase is reachab
 3. Register or log in with a non-admin account.
 4. Confirm `/dashboard/listings/new` loads after auth.
 5. Request a password reset and confirm the email arrives with a `/reset-password?token=...` link.
-6. Open Render logs and confirm request logs include method, path, status, duration, and client IP.
+6. Request an agent media upload URL and confirm the returned public URL points at the configured storage bucket.
+7. Open Render logs and confirm request logs include method, path, status, duration, and client IP.

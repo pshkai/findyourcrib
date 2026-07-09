@@ -64,5 +64,6 @@ Detailed production steps live in `docs/deployment/production.md`; launch readin
 - Set `DATABASE_URL` in Render to a valid PostgreSQL connection string, then run `npm run prisma:migrate:deploy --workspace backend`.
 - Set `JWT_SECRET` in Render to a strong private value. Production startup fails without it.
 - Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM` in Render for password reset email delivery.
+- Set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `SUPABASE_STORAGE_BUCKET` in Render for signed property image uploads.
 - Optional: set `JWT_EXPIRES_IN` in Render, defaulting to `1h`.
 - Optional: set `PORT` in Render if the platform does not inject one. The backend validates `PORT`, `DATABASE_URL`, `FRONTEND_URL`, and JWT settings at startup.

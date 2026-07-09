@@ -75,6 +75,9 @@ export function validateBackendEnv(config: EnvInput) {
   const smtpFrom = readString(config, "SMTP_FROM");
   const smtpPort = parseInteger(readString(config, "SMTP_PORT"), DEFAULT_SMTP_PORT, "SMTP_PORT");
   const smtpSecure = parseBoolean(readString(config, "SMTP_SECURE"), DEFAULT_SMTP_SECURE);
+  const supabaseUrl = readString(config, "SUPABASE_URL");
+  const supabaseServiceRoleKey = readString(config, "SUPABASE_SERVICE_ROLE_KEY");
+  const supabaseStorageBucket = readString(config, "SUPABASE_STORAGE_BUCKET");
 
   if (!databaseUrl) {
     throw new Error("DATABASE_URL is required in production");
@@ -93,6 +96,14 @@ export function validateBackendEnv(config: EnvInput) {
     throw new Error("SMTP_HOST and SMTP_FROM are required in production for password reset emails");
   }
 
+  if (supabaseUrl) {
+    assertUrl(supabaseUrl, "SUPABASE_URL");
+  }
+
+  if (isProduction && (!supabaseUrl || !supabaseServiceRoleKey || !supabaseStorageBucket)) {
+    throw new Error("SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and SUPABASE_STORAGE_BUCKET are required in production");
+  }
+
   return {
     ...config,
     DATABASE_URL: databaseUrl,
@@ -106,6 +117,9 @@ export function validateBackendEnv(config: EnvInput) {
     SMTP_PASS: readString(config, "SMTP_PASS"),
     SMTP_PORT: smtpPort,
     SMTP_SECURE: smtpSecure,
-    SMTP_USER: readString(config, "SMTP_USER")
+    SMTP_USER: readString(config, "SMTP_USER"),
+    SUPABASE_SERVICE_ROLE_KEY: supabaseServiceRoleKey,
+    SUPABASE_STORAGE_BUCKET: supabaseStorageBucket,
+    SUPABASE_URL: supabaseUrl
   };
 }

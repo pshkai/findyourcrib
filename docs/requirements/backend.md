@@ -13,6 +13,7 @@
 - Password recovery: secure reset-token creation and consumption with SMTP email delivery.
 - Users: profile and agent public profile.
 - Properties: CRUD, search, verification, availability confirmation, media.
+- Media: signed Supabase Storage upload URLs for agent listing images.
 - Favorites: renter saved listings.
 - Inquiries: renter-to-agent contact workflow.
 - Admin: moderation and listing verification.

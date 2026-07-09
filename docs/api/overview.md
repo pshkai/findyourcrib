@@ -47,6 +47,7 @@ Auth notes:
 - `PATCH /agent/properties/:id`
 - `DELETE /agent/properties/:id`
 - `POST /agent/properties/:id/confirm-availability`
+- `POST /agent/media/upload-url`
 
 Agent property create/update requests accept either a legacy `coverImageUrl` or an ordered `images` array:
 
@@ -60,6 +61,8 @@ Agent property create/update requests accept either a legacy `coverImageUrl` or 
 ```
 
 The API de-duplicates image URLs, stores display order, and uses the first image as the listing cover.
+
+`POST /agent/media/upload-url` accepts `{ "fileName": "living.webp", "contentType": "image/webp" }` and returns a signed Supabase upload URL plus the eventual public URL.
 
 ## Admin
 
@@ -107,6 +110,7 @@ Search responses include `meta.page`, `meta.pageSize`, and `meta.total` for pagi
 - Public property read: `GET /properties`, `GET /properties/featured`, `GET /properties/:id`.
 - Agent property management: create, list own, update own, delete own, and confirm availability.
 - Agent media: ordered listing galleries via image URLs, with cover-image compatibility.
+- Media storage: agent-only signed Supabase Storage upload URLs for property images.
 - Inquiries: public inquiry creation and agent inquiry inbox.
 - Inquiry triage: agents can mark inquiries as `NEW`, `CONTACTED`, `CLOSED`, or `ARCHIVED`.
 - Favorites: authenticated saved listing list, add, and remove.

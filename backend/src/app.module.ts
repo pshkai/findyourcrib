@@ -7,6 +7,7 @@ import { CsrfOriginGuard } from "./csrf-origin.guard";
 import { FavoritesModule } from "./favorites/favorites.module";
 import { HealthController } from "./health.controller";
 import { InquiriesModule } from "./inquiries/inquiries.module";
+import { MediaModule } from "./media/media.module";
 import { PrismaModule } from "./prisma.module";
 import { PropertiesModule } from "./properties/properties.module";
 import { RateLimitGuard } from "./rate-limit.guard";
@@ -21,7 +22,8 @@ import { UsersModule } from "./users/users.module";
     UsersModule,
     PropertiesModule,
     FavoritesModule,
-    InquiriesModule
+    InquiriesModule,
+    MediaModule
   ],
   controllers: [HealthController],
   providers: [

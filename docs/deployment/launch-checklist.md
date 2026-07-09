@@ -18,6 +18,7 @@ Use this checklist before calling FindYourCrib production-ready.
 - [ ] Render `FRONTEND_URL` includes every production frontend origin.
 - [ ] Render `JWT_SECRET` is strong, private, and not shared with local development.
 - [ ] Render SMTP variables are configured with a verified sender for password reset emails.
+- [ ] Render Supabase storage variables are configured with a backend-only service role key.
 - [ ] Optional Render `JWT_EXPIRES_IN` is intentionally chosen.
 
 ## Product Flows
@@ -29,6 +30,7 @@ Use this checklist before calling FindYourCrib production-ready.
 - [ ] Password reset request/reset flow works with delivered email links.
 - [ ] Agent can create, edit, confirm, and delete a listing.
 - [ ] Agent can add and remove gallery image URLs.
+- [ ] Agent can request signed media upload URLs for listing images.
 - [ ] Renter can favorite a property and submit an inquiry.
 - [ ] Agent can triage inquiries.
 - [ ] Admin can verify, reject, feature, and hide listings.
