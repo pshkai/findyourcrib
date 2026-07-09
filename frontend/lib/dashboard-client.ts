@@ -160,6 +160,41 @@ export async function deleteListing(propertyId: string) {
   await authorizedRequest(`/agent/properties/${propertyId}`, { method: "DELETE" });
 }
 
+interface MediaUploadUrl {
+  contentType: "image/jpeg" | "image/png" | "image/webp";
+  path: string;
+  publicUrl: string;
+  signedUrl: string;
+}
+
+export async function uploadPropertyImage(file: File) {
+  const envelope = await authorizedRequest<Envelope<MediaUploadUrl>>("/agent/media/upload-url", {
+    method: "POST",
+    body: JSON.stringify({
+      contentType: file.type,
+      fileName: file.name
+    })
+  });
+
+  const uploadBody = new FormData();
+  uploadBody.append("cacheControl", "3600");
+  uploadBody.append("", file);
+
+  const response = await fetch(envelope.data.signedUrl, {
+    method: "PUT",
+    headers: {
+      "x-upsert": "false"
+    },
+    body: uploadBody
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to upload image");
+  }
+
+  return envelope.data.publicUrl;
+}
+
 export async function createListing(payload: {
   title: string;
   description: string;

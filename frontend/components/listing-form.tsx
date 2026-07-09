@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, ImagePlus, Save, Trash2 } from "lucide-react";
-import { createListing, updateListing } from "../lib/dashboard-client";
+import { Building2, ImagePlus, Save, Trash2, UploadCloud } from "lucide-react";
+import { createListing, updateListing, uploadPropertyImage } from "../lib/dashboard-client";
 import type { PropertySummary, PropertyType } from "@findyourcrib/shared";
 
 type ListingFormMode = "create" | "edit";
@@ -26,6 +26,7 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
   const coverIndex = firstFilledImageIndex(imageUrls);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setSubmitting] = useState(false);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
 
   async function onSubmit(formData: FormData) {
     setSubmitting(true);
@@ -122,7 +123,7 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
             <ImagePlus size={16} />
             Listing gallery
           </span>
-          <button type="button" onClick={() => setImageUrls((urls) => [...urls, ""])} aria-label="Add image URL">
+          <button type="button" onClick={() => setImageUrls((urls) => [...urls, ""])} aria-label="Add image">
             <ImagePlus size={16} />
             Add image
           </button>
@@ -143,11 +144,21 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
                   onChange={(event) => updateImageUrl(index, event.target.value)}
                 />
               </label>
+              <label className="image-upload-button" aria-label={`Upload image ${index + 1}`}>
+                <UploadCloud size={16} />
+                {uploadingIndex === index ? "Uploading" : "Upload"}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  disabled={uploadingIndex !== null || isSubmitting}
+                  onChange={(event) => void uploadImage(index, event.currentTarget)}
+                />
+              </label>
               <button
                 type="button"
                 onClick={() => removeImageUrl(index)}
                 aria-label={`Remove image URL ${index + 1}`}
-                disabled={imageUrls.length === 1}
+                disabled={imageUrls.length === 1 || uploadingIndex !== null}
               >
                 <Trash2 size={16} />
               </button>
@@ -174,6 +185,32 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       const nextUrls = urls.filter((_, urlIndex) => urlIndex !== index);
       return nextUrls.length ? nextUrls : [""];
     });
+  }
+
+  async function uploadImage(index: number, input: HTMLInputElement) {
+    const file = input.files?.[0];
+    input.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setError("Upload a JPG, PNG, or WebP image.");
+      return;
+    }
+
+    setError(null);
+    setUploadingIndex(index);
+
+    try {
+      const publicUrl = await uploadPropertyImage(file);
+      updateImageUrl(index, publicUrl);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Unable to upload image");
+    } finally {
+      setUploadingIndex(null);
+    }
   }
 }
 
