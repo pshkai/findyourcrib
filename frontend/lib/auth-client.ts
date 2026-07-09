@@ -1,5 +1,7 @@
 "use client";
 
+import { throwApiError } from "./api-error";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 const TOKEN_KEY = "findyourcrib.accessToken";
 
@@ -54,8 +56,7 @@ export async function authorizedRequest<T>(path: string, init?: RequestInit) {
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || `Request failed: ${response.status}`);
+    await throwApiError(response, `Request failed: ${response.status}`);
   }
 
   return (await response.json()) as T;
@@ -78,8 +79,7 @@ async function authRequest(path: string, payload: Record<string, unknown>) {
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || "Authentication failed");
+    await throwApiError(response, "Authentication failed");
   }
 
   const envelope = (await response.json()) as AuthResponse;
