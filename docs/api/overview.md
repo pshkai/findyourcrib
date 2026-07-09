@@ -13,6 +13,8 @@ Base path: `/api/v1`
 - `POST /auth/register`
 - `POST /auth/login`
 - `POST /auth/logout`
+- `POST /auth/forgot-password`
+- `POST /auth/reset-password`
 
 Rate limits:
 
@@ -26,6 +28,8 @@ Auth notes:
 - Authenticated browser requests should send credentials. Non-browser API clients can continue using `Authorization: Bearer <token>`.
 - `POST /auth/logout` clears the browser session cookie.
 - Mutating browser requests with an `Origin` header must come from a configured `FRONTEND_URL` origin.
+- `POST /auth/forgot-password` always returns success-shaped output to avoid account enumeration. Non-production responses include `meta.resetToken` until email delivery is wired.
+- `POST /auth/reset-password` accepts `{ "token": "...", "password": "..." }` and clears the token after use.
 
 ## Authenticated
 
@@ -99,7 +103,7 @@ Search responses include `meta.page`, `meta.pageSize`, and `meta.total` for pagi
 
 ## Implemented in Current Backend Slice
 
-- Auth: `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, bearer-token auth, and httpOnly browser session cookies.
+- Auth: `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, password reset token groundwork, `GET /auth/me`, bearer-token auth, and httpOnly browser session cookies.
 - Public property read: `GET /properties`, `GET /properties/featured`, `GET /properties/:id`.
 - Agent property management: create, list own, update own, delete own, and confirm availability.
 - Agent media: ordered listing galleries via image URLs, with cover-image compatibility.

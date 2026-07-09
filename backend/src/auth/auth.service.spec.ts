@@ -8,7 +8,10 @@ describe("AuthService", () => {
     const usersService = {
       create: jest.fn(),
       findByEmail: jest.fn(),
-      findPublicById: jest.fn()
+      findByResetTokenHash: jest.fn(),
+      findPublicById: jest.fn(),
+      updatePassword: jest.fn(),
+      updatePasswordReset: jest.fn()
     };
     const jwtService = {
       sign: jest.fn().mockReturnValue("signed-token")
@@ -154,5 +157,59 @@ describe("AuthService", () => {
       meta: {},
       error: null
     });
+  });
+
+  it("creates a password reset token without exposing whether an email exists", async () => {
+    const { service, usersService } = createService();
+    usersService.findByEmail.mockResolvedValue({ id: "user-1", email: "renter@example.com" });
+
+    const result = await service.forgotPassword({ email: "RENTER@EXAMPLE.COM" });
+
+    expect(usersService.findByEmail).toHaveBeenCalledWith("renter@example.com");
+    expect(usersService.updatePasswordReset).toHaveBeenCalledWith("user-1", expect.any(String), expect.any(Date));
+    expect(result).toMatchObject({ data: null, error: null });
+    expect(typeof result.meta.resetToken).toBe("string");
+  });
+
+  it("does not create a password reset record for unknown emails", async () => {
+    const { service, usersService } = createService();
+    usersService.findByEmail.mockResolvedValue(null);
+
+    await expect(service.forgotPassword({ email: "missing@example.com" })).resolves.toEqual({
+      data: null,
+      meta: {},
+      error: null
+    });
+    expect(usersService.updatePasswordReset).not.toHaveBeenCalled();
+  });
+
+  it("resets password with a valid token and clears token fields", async () => {
+    const { service, usersService } = createService();
+    jest.spyOn(bcrypt, "hash").mockResolvedValue("new-hashed-password" as never);
+    usersService.findByEmail.mockResolvedValue({ id: "user-1", email: "renter@example.com" });
+
+    const forgot = await service.forgotPassword({ email: "renter@example.com" });
+    usersService.findByResetTokenHash.mockResolvedValue({
+      id: "user-1",
+      resetTokenExpiresAt: new Date(Date.now() + 60_000)
+    });
+
+    await service.resetPassword({ token: String(forgot.meta.resetToken), password: "newpassword123" });
+
+    expect(usersService.findByResetTokenHash).toHaveBeenCalledWith(expect.any(String));
+    expect(usersService.updatePassword).toHaveBeenCalledWith("user-1", "new-hashed-password");
+  });
+
+  it("rejects expired or invalid password reset tokens", async () => {
+    const { service, usersService } = createService();
+    usersService.findByResetTokenHash.mockResolvedValue({
+      id: "user-1",
+      resetTokenExpiresAt: new Date(Date.now() - 1)
+    });
+
+    await expect(service.resetPassword({ token: "expired-token", password: "newpassword123" })).rejects.toBeInstanceOf(
+      UnauthorizedException
+    );
+    expect(usersService.updatePassword).not.toHaveBeenCalled();
   });
 });

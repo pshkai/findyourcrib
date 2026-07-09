@@ -2,8 +2,12 @@ import { ConflictException, Injectable, UnauthorizedException } from "@nestjs/co
 import { JwtService } from "@nestjs/jwt";
 import { UserRole } from "@prisma/client";
 import * as bcrypt from "bcrypt";
+import { createHash, randomBytes } from "crypto";
 import { UsersService } from "../users/users.service";
-import { LoginDto, RegisterDto } from "./dto";
+import { ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto } from "./dto";
+
+const RESET_TOKEN_BYTES = 32;
+const RESET_TOKEN_TTL_MS = 30 * 60 * 1000;
 
 @Injectable()
 export class AuthService {
@@ -45,6 +49,38 @@ export class AuthService {
     return { data: await this.usersService.findPublicById(userId), meta: {}, error: null };
   }
 
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const email = dto.email.toLowerCase();
+    const user = await this.usersService.findByEmail(email);
+    let resetToken: string | undefined;
+
+    if (user) {
+      resetToken = randomBytes(RESET_TOKEN_BYTES).toString("hex");
+      await this.usersService.updatePasswordReset(user.id, this.hashResetToken(resetToken), new Date(Date.now() + RESET_TOKEN_TTL_MS));
+    }
+
+    return {
+      data: null,
+      meta: {
+        ...(process.env.NODE_ENV === "production" || !resetToken ? {} : { resetToken })
+      },
+      error: null
+    };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const resetTokenHash = this.hashResetToken(dto.token);
+    const user = await this.usersService.findByResetTokenHash(resetTokenHash);
+
+    if (!user || !user.resetTokenExpiresAt || user.resetTokenExpiresAt.getTime() <= Date.now()) {
+      throw new UnauthorizedException("Password reset token is invalid or expired");
+    }
+
+    await this.usersService.updatePassword(user.id, await bcrypt.hash(dto.password, 12));
+
+    return { data: null, meta: {}, error: null };
+  }
+
   private issueSession(user: { id: string; email: string; name: string; role: UserRole }) {
     const accessToken = this.jwtService.sign({
       sub: user.id,
@@ -65,5 +101,9 @@ export class AuthService {
       meta: {},
       error: null
     };
+  }
+
+  private hashResetToken(token: string) {
+    return createHash("sha256").update(token).digest("hex");
   }
 }

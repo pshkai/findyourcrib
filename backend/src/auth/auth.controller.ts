@@ -4,7 +4,7 @@ import { CurrentUser } from "./current-user.decorator";
 import { AuthService } from "./auth.service";
 import type { AuthUser } from "./auth.types";
 import { clearAuthCookie, setAuthCookie } from "./auth-cookie";
-import { LoginDto, RegisterDto } from "./dto";
+import { ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto } from "./dto";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { RateLimit } from "../rate-limit.decorator";
 
@@ -32,6 +32,18 @@ export class AuthController {
   logout(@Res({ passthrough: true }) response: Response) {
     clearAuthCookie(response);
     return { data: null, meta: {}, error: null };
+  }
+
+  @RateLimit({ limit: 4, windowMs: 60_000 })
+  @Post("forgot-password")
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto);
+  }
+
+  @RateLimit({ limit: 5, windowMs: 60_000 })
+  @Post("reset-password")
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 
   @UseGuards(JwtAuthGuard)

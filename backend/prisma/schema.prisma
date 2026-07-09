@@ -50,6 +50,8 @@ model User {
   passwordHash String
   phoneNumber  String?
   role         UserRole   @default(RENTER)
+  resetTokenHash      String?
+  resetTokenExpiresAt DateTime?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 

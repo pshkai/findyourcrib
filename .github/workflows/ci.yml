@@ -24,6 +24,7 @@ jobs:
       - run: npm ci
       - run: npm run build --workspace shared
       - run: npm run prisma:validate --workspace backend
+      - run: npm run prisma:generate --workspace backend
       - run: npm run test --workspace backend
       - run: npm run build --workspace backend
       - run: npm run build --workspace frontend

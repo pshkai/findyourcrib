@@ -10,6 +10,7 @@
 ## Core Modules
 
 - Auth: register, login, current user, role guards.
+- Password recovery: secure reset-token creation and consumption, with email delivery before public launch.
 - Users: profile and agent public profile.
 - Properties: CRUD, search, verification, availability confirmation, media.
 - Favorites: renter saved listings.
@@ -34,3 +35,4 @@
 - API responses include baseline security headers through Helmet.
 - Health checks expose liveness at `/api/v1/health` and database readiness at `/api/v1/health/ready`.
 - API requests emit method, path, status, duration, and client IP logs for production debugging.
+- Password reset tokens are stored hashed, expire, and are cleared after successful reset.

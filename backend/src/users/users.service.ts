@@ -23,6 +23,28 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
+  updatePasswordReset(id: string, resetTokenHash: string, resetTokenExpiresAt: Date): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { resetTokenHash, resetTokenExpiresAt }
+    });
+  }
+
+  findByResetTokenHash(resetTokenHash: string): Promise<User | null> {
+    return this.prisma.user.findFirst({ where: { resetTokenHash } });
+  }
+
+  updatePassword(id: string, passwordHash: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        passwordHash,
+        resetTokenExpiresAt: null,
+        resetTokenHash: null
+      }
+    });
+  }
+
   async findPublicById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
