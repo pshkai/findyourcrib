@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, ImagePlus, Save, Trash2, UploadCloud } from "lucide-react";
+import { ArrowDown, ArrowUp, Building2, ImagePlus, Save, Star, Trash2, UploadCloud } from "lucide-react";
 import { createListing, updateListing, uploadPropertyImage } from "../lib/dashboard-client";
 import type { PropertySummary, PropertyType } from "@findyourcrib/shared";
 
@@ -24,6 +24,7 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
     listing?.imageUrls?.length ? listing.imageUrls : listing?.coverImageUrl ? [listing.coverImageUrl] : [""]
   );
   const coverIndex = firstFilledImageIndex(imageUrls);
+  const filledImageCount = imageUrls.filter((url) => url.trim()).length;
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setSubmitting] = useState(false);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
@@ -119,10 +120,13 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       <input type="hidden" name="coverImageUrl" value={firstFilledImageUrl(imageUrls)} />
       <div className="wide image-url-field">
         <div className="image-field-header">
-          <span>
-            <ImagePlus size={16} />
-            Listing gallery
-          </span>
+          <div>
+            <span>
+              <ImagePlus size={16} />
+              Listing gallery
+            </span>
+            <p>{galleryGuidance(filledImageCount)}</p>
+          </div>
           <button type="button" onClick={() => setImageUrls((urls) => [...urls, ""])} aria-label="Add image">
             <ImagePlus size={16} />
             Add image
@@ -154,6 +158,27 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
                   onChange={(event) => void uploadImage(index, event.currentTarget)}
                 />
               </label>
+              <div className="image-row-controls" aria-label={`Image ${index + 1} order controls`}>
+                <button type="button" onClick={() => moveImage(index, -1)} aria-label={`Move image ${index + 1} up`} disabled={index === 0 || uploadingIndex !== null}>
+                  <ArrowUp size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveImage(index, 1)}
+                  aria-label={`Move image ${index + 1} down`}
+                  disabled={index === imageUrls.length - 1 || uploadingIndex !== null}
+                >
+                  <ArrowDown size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => makeCover(index)}
+                  aria-label={`Set image ${index + 1} as cover`}
+                  disabled={!imageUrl.trim() || index === coverIndex || uploadingIndex !== null}
+                >
+                  <Star size={15} />
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={() => removeImageUrl(index)}
@@ -187,6 +212,32 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
     });
   }
 
+  function moveImage(index: number, direction: -1 | 1) {
+    setImageUrls((urls) => {
+      const targetIndex = index + direction;
+
+      if (targetIndex < 0 || targetIndex >= urls.length) {
+        return urls;
+      }
+
+      const nextUrls = [...urls];
+      [nextUrls[index], nextUrls[targetIndex]] = [nextUrls[targetIndex], nextUrls[index]];
+      return nextUrls;
+    });
+  }
+
+  function makeCover(index: number) {
+    setImageUrls((urls) => {
+      const selectedUrl = urls[index];
+
+      if (!selectedUrl?.trim()) {
+        return urls;
+      }
+
+      return [selectedUrl, ...urls.filter((_, urlIndex) => urlIndex !== index)];
+    });
+  }
+
   async function uploadImage(index: number, input: HTMLInputElement) {
     const file = input.files?.[0];
     input.value = "";
@@ -212,6 +263,18 @@ export function ListingForm({ mode = "create", listing }: ListingFormProps) {
       setUploadingIndex(null);
     }
   }
+}
+
+function galleryGuidance(imageCount: number) {
+  if (imageCount >= 5) {
+    return "Strong gallery. Put the best room first as the cover.";
+  }
+
+  if (imageCount >= 1) {
+    return "Add at least five photos for stronger renter confidence.";
+  }
+
+  return "Upload or paste a cover image, then add room and building photos.";
 }
 
 function firstFilledImageUrl(urls: string[]) {

@@ -1203,7 +1203,9 @@
 }
 
 .image-field-header,
-.image-field-header span {
+.image-field-header span,
+.image-row-controls,
+.image-row-controls button {
   align-items: center;
   display: inline-flex;
 }
@@ -1218,8 +1220,15 @@
   gap: 7px;
 }
 
+.image-field-header p {
+  color: var(--muted);
+  font-size: 0.86rem;
+  margin: 6px 0 0;
+}
+
 .image-field-header button,
 .image-upload-button,
+.image-row-controls button,
 .image-url-row > button {
   background: var(--surface-strong);
   border: 1px solid var(--line);
@@ -1237,7 +1246,7 @@
   align-items: center;
   display: grid;
   gap: 10px;
-  grid-template-columns: 120px 1fr auto auto;
+  grid-template-columns: 120px 1fr auto auto auto;
 }
 
 .image-preview {
@@ -1297,6 +1306,31 @@
 .image-upload-button:has(input:disabled) {
   cursor: wait;
   opacity: 0.62;
+}
+
+.image-row-controls {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.image-row-controls button {
+  border: 0;
+  border-radius: 0;
+  border-right: 1px solid var(--line);
+  justify-content: center;
+  padding: 0;
+  width: 34px;
+}
+
+.image-row-controls button:last-child {
+  border-right: 0;
+}
+
+.image-row-controls button:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.48;
 }
 
 .image-url-row > button:disabled {
@@ -1601,8 +1635,14 @@
   }
 
   .image-upload-button,
+  .image-row-controls,
   .image-url-row > button {
     width: 100%;
+  }
+
+  .image-row-controls button {
+    flex: 1;
+    width: auto;
   }
 
   .dashboard-sidebar {
