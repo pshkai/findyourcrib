@@ -61,6 +61,14 @@ Use readiness when Render should avoid routing traffic until Supabase is reachab
 
 ## Post-Deploy Smoke Checks
 
+Run the automated public smoke check after each deploy:
+
+```bash
+FRONTEND_URL=https://your-vercel-app.vercel.app BACKEND_URL=https://your-render-api.onrender.com npm run smoke:production
+```
+
+The smoke runner checks the Vercel home page, property search page, `robots.txt`, Render liveness, and Render database readiness. `BACKEND_URL` can be either the Render origin or the API base URL that ends in `/api/v1`.
+
 1. Open the Vercel frontend home page.
 2. Open `/properties?query=Bangkok`.
 3. Register or log in with a non-admin account.

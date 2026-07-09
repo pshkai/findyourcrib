@@ -13,6 +13,7 @@
     "dev:backend": "npm run start:dev --workspace backend",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
+    "smoke:production": "node scripts/production-smoke.mjs",
     "test": "npm run test --workspaces --if-present",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md,css,prisma}\""
   },

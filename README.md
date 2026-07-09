@@ -30,6 +30,7 @@ npm install
 npm run dev
 npm run lint
 npm run test
+npm run smoke:production
 ```
 
 Each app also has its own scripts under `frontend` and `backend`.
@@ -67,3 +68,5 @@ Detailed production steps live in `docs/deployment/production.md`; launch readin
 - Set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `SUPABASE_STORAGE_BUCKET` in Render for signed property image uploads.
 - Optional: set `JWT_EXPIRES_IN` in Render, defaulting to `1h`.
 - Optional: set `PORT` in Render if the platform does not inject one. The backend validates `PORT`, `DATABASE_URL`, `FRONTEND_URL`, and JWT settings at startup.
+
+After a deploy, run `FRONTEND_URL=https://your-vercel-app.vercel.app BACKEND_URL=https://your-render-api.onrender.com npm run smoke:production` to check the public frontend and backend health endpoints.
