@@ -16,6 +16,12 @@ This runbook keeps Vercel, Render, and Supabase changes repeatable.
 - `JWT_SECRET`: strong private value, never `replace-me`.
 - `JWT_EXPIRES_IN`: optional, defaults to `1h`.
 - `PORT`: optional when Render injects it.
+- `SMTP_HOST`: SMTP server hostname for password reset emails.
+- `SMTP_PORT`: SMTP server port, defaults to `587`.
+- `SMTP_SECURE`: `true` for implicit TLS, otherwise `false`.
+- `SMTP_USER`: SMTP username when required by the provider.
+- `SMTP_PASS`: SMTP password or API key when required by the provider.
+- `SMTP_FROM`: verified sender, for example `FindYourCrib <support@example.com>`.
 
 ## Build and Start Commands
 
@@ -56,4 +62,5 @@ Use readiness when Render should avoid routing traffic until Supabase is reachab
 2. Open `/properties?query=Bangkok`.
 3. Register or log in with a non-admin account.
 4. Confirm `/dashboard/listings/new` loads after auth.
-5. Open Render logs and confirm request logs include method, path, status, duration, and client IP.
+5. Request a password reset and confirm the email arrives with a `/reset-password?token=...` link.
+6. Open Render logs and confirm request logs include method, path, status, duration, and client IP.

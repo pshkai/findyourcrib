@@ -10,7 +10,7 @@
 ## Core Modules
 
 - Auth: register, login, current user, role guards.
-- Password recovery: secure reset-token creation and consumption, with email delivery before public launch.
+- Password recovery: secure reset-token creation and consumption with SMTP email delivery.
 - Users: profile and agent public profile.
 - Properties: CRUD, search, verification, availability confirmation, media.
 - Favorites: renter saved listings.

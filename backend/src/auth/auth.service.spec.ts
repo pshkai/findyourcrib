@@ -16,10 +16,18 @@ describe("AuthService", () => {
     const jwtService = {
       sign: jest.fn().mockReturnValue("signed-token")
     };
+    const configService = {
+      getOrThrow: jest.fn().mockReturnValue("http://localhost:3000")
+    };
+    const mailService = {
+      sendPasswordReset: jest.fn()
+    };
 
     return {
+      configService,
       jwtService,
-      service: new AuthService(usersService as never, jwtService as never),
+      mailService,
+      service: new AuthService(usersService as never, jwtService as never, configService as never, mailService as never),
       usersService
     };
   }
@@ -160,13 +168,17 @@ describe("AuthService", () => {
   });
 
   it("creates a password reset token without exposing whether an email exists", async () => {
-    const { service, usersService } = createService();
+    const { mailService, service, usersService } = createService();
     usersService.findByEmail.mockResolvedValue({ id: "user-1", email: "renter@example.com" });
 
     const result = await service.forgotPassword({ email: "RENTER@EXAMPLE.COM" });
 
     expect(usersService.findByEmail).toHaveBeenCalledWith("renter@example.com");
     expect(usersService.updatePasswordReset).toHaveBeenCalledWith("user-1", expect.any(String), expect.any(Date));
+    expect(mailService.sendPasswordReset).toHaveBeenCalledWith({
+      email: "renter@example.com",
+      resetUrl: expect.stringContaining("/reset-password?token=")
+    });
     expect(result).toMatchObject({ data: null, error: null });
     expect(typeof result.meta.resetToken).toBe("string");
   });

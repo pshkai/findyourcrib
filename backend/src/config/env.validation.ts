@@ -3,6 +3,8 @@ const DEFAULT_FRONTEND_URL = "http://localhost:3000,https://findyourcrib.vercel.
 const DEFAULT_JWT_EXPIRES_IN = "1h";
 const DEFAULT_NODE_ENV = "development";
 const DEFAULT_PORT = 4000;
+const DEFAULT_SMTP_PORT = 587;
+const DEFAULT_SMTP_SECURE = false;
 
 type EnvInput = Record<string, unknown>;
 
@@ -32,6 +34,35 @@ function parsePort(value: string | undefined) {
   return port;
 }
 
+function parseInteger(value: string | undefined, fallback: number, key: string) {
+  if (!value) {
+    return fallback;
+  }
+
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 1 || parsed > 65535) {
+    throw new Error(`${key} must be an integer between 1 and 65535`);
+  }
+
+  return parsed;
+}
+
+function parseBoolean(value: string | undefined, fallback: boolean) {
+  if (!value) {
+    return fallback;
+  }
+
+  if (["true", "1"].includes(value.toLowerCase())) {
+    return true;
+  }
+
+  if (["false", "0"].includes(value.toLowerCase())) {
+    return false;
+  }
+
+  throw new Error("SMTP_SECURE must be true or false");
+}
+
 export function validateBackendEnv(config: EnvInput) {
   const nodeEnv = readString(config, "NODE_ENV") ?? DEFAULT_NODE_ENV;
   const isProduction = nodeEnv === "production";
@@ -40,6 +71,10 @@ export function validateBackendEnv(config: EnvInput) {
   const jwtSecret = readString(config, "JWT_SECRET");
   const jwtExpiresIn = readString(config, "JWT_EXPIRES_IN") ?? DEFAULT_JWT_EXPIRES_IN;
   const port = parsePort(readString(config, "PORT"));
+  const smtpHost = readString(config, "SMTP_HOST");
+  const smtpFrom = readString(config, "SMTP_FROM");
+  const smtpPort = parseInteger(readString(config, "SMTP_PORT"), DEFAULT_SMTP_PORT, "SMTP_PORT");
+  const smtpSecure = parseBoolean(readString(config, "SMTP_SECURE"), DEFAULT_SMTP_SECURE);
 
   if (!databaseUrl) {
     throw new Error("DATABASE_URL is required in production");
@@ -54,6 +89,10 @@ export function validateBackendEnv(config: EnvInput) {
     throw new Error("JWT_SECRET must be set to a private value in production");
   }
 
+  if (isProduction && (!smtpHost || !smtpFrom)) {
+    throw new Error("SMTP_HOST and SMTP_FROM are required in production for password reset emails");
+  }
+
   return {
     ...config,
     DATABASE_URL: databaseUrl,
@@ -61,6 +100,12 @@ export function validateBackendEnv(config: EnvInput) {
     JWT_EXPIRES_IN: jwtExpiresIn,
     JWT_SECRET: jwtSecret,
     NODE_ENV: nodeEnv,
-    PORT: port
+    PORT: port,
+    SMTP_FROM: smtpFrom,
+    SMTP_HOST: smtpHost,
+    SMTP_PASS: readString(config, "SMTP_PASS"),
+    SMTP_PORT: smtpPort,
+    SMTP_SECURE: smtpSecure,
+    SMTP_USER: readString(config, "SMTP_USER")
   };
 }

@@ -3,6 +3,8 @@ import { JwtService } from "@nestjs/jwt";
 import { UserRole } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { createHash, randomBytes } from "crypto";
+import { ConfigService } from "@nestjs/config";
+import { MailService } from "../mail/mail.service";
 import { UsersService } from "../users/users.service";
 import { ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto } from "./dto";
 
@@ -13,7 +15,9 @@ const RESET_TOKEN_TTL_MS = 30 * 60 * 1000;
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    private readonly mailService: MailService
   ) {}
 
   async register(dto: RegisterDto) {
@@ -57,6 +61,10 @@ export class AuthService {
     if (user) {
       resetToken = randomBytes(RESET_TOKEN_BYTES).toString("hex");
       await this.usersService.updatePasswordReset(user.id, this.hashResetToken(resetToken), new Date(Date.now() + RESET_TOKEN_TTL_MS));
+      await this.mailService.sendPasswordReset({
+        email,
+        resetUrl: this.passwordResetUrl(resetToken)
+      });
     }
 
     return {
@@ -105,5 +113,12 @@ export class AuthService {
 
   private hashResetToken(token: string) {
     return createHash("sha256").update(token).digest("hex");
+  }
+
+  private passwordResetUrl(token: string) {
+    const frontendOrigin = this.configService.getOrThrow<string>("FRONTEND_URL").split(",")[0].trim();
+    const url = new URL("/reset-password", frontendOrigin);
+    url.searchParams.set("token", token);
+    return url.toString();
   }
 }
