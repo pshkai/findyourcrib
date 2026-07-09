@@ -9,6 +9,9 @@ export default function LoginPage() {
         <h1>Login to FindYourCrib</h1>
         <AuthForm mode="login" />
         <p className="auth-switch">
+          Forgot your password? <a href="/forgot-password">Reset it</a>
+        </p>
+        <p className="auth-switch">
           New here? <a href="/register">Create an account</a>
         </p>
       </section>

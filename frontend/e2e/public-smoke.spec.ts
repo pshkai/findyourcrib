@@ -22,11 +22,22 @@ test("auth entry pages render usable forms", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Login to FindYourCrib" })).toBeVisible();
   await expect(page.getByLabel("Email")).toBeVisible();
   await expect(page.getByLabel("Password")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Reset it" })).toBeVisible();
 
   await page.goto("/register");
   await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
   await expect(page.getByLabel("Name")).toBeVisible();
   await expect(page.getByLabel("Account type")).toBeVisible();
+});
+
+test("password recovery pages render usable forms", async ({ page }) => {
+  await page.goto("/forgot-password");
+  await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Send reset link" })).toBeVisible();
+
+  await page.goto("/reset-password?token=dev-token");
+  await expect(page.getByRole("heading", { name: "Choose a new password" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reset password" })).toBeVisible();
 });
 
 test("missing routes render the custom not found state", async ({ page }) => {

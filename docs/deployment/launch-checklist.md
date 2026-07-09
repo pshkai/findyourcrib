@@ -25,7 +25,7 @@ Use this checklist before calling FindYourCrib production-ready.
 - [ ] Search results load with filters, pagination, and fallback state.
 - [ ] Property detail page loads gallery, facts, agent information, favorites, and inquiry form.
 - [ ] Register and login work with httpOnly session cookies.
-- [ ] Password reset request/reset flow works after email delivery is configured.
+- [ ] Password reset request/reset UI works after email delivery is configured.
 - [ ] Agent can create, edit, confirm, and delete a listing.
 - [ ] Agent can add and remove gallery image URLs.
 - [ ] Renter can favorite a property and submit an inquiry.

@@ -937,6 +937,21 @@
   padding: 10px 12px;
 }
 
+.auth-success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  color: #047857;
+  line-height: 1.5;
+  margin: 0;
+  padding: 10px 12px;
+}
+
+.auth-success a {
+  color: var(--accent-strong);
+  font-weight: 900;
+}
+
 .auth-home {
   align-items: center;
   display: inline-flex;

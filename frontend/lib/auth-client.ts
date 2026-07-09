@@ -25,6 +25,14 @@ interface MeResponse {
   error: unknown;
 }
 
+interface ForgotPasswordResponse {
+  data: null;
+  meta?: {
+    resetToken?: string;
+  };
+  error: unknown;
+}
+
 export function getAccessToken() {
   if (typeof window === "undefined") {
     return null;
@@ -99,6 +107,40 @@ export function register(payload: {
   role: "RENTER" | "AGENT" | "OWNER";
 }) {
   return authRequest("/auth/register", payload);
+}
+
+export async function forgotPassword(payload: { email: string }) {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    await throwApiError(response, "Unable to request password reset");
+  }
+
+  return (await response.json()) as ForgotPasswordResponse;
+}
+
+export async function resetPassword(payload: { token: string; password: string }) {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    await throwApiError(response, "Unable to reset password");
+  }
 }
 
 export async function logoutRequest() {
