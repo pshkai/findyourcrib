@@ -1,7 +1,7 @@
 import type { PropertySearchParams, PropertySummary, PropertyType } from "@findyourcrib/shared";
+import { API_BASE_URL } from "./api-base";
 import { featuredProperties } from "./mock-data";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 const API_TIMEOUT_MS = 3500;
 
 interface ApiEnvelope<T> {

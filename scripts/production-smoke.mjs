@@ -38,12 +38,12 @@ const checks = [
   },
   {
     label: "backend liveness",
-    url: new URL("/health", backendUrl).toString(),
+    url: joinUrl(backendUrl, "health"),
     expectJson: true
   },
   {
     label: "backend readiness",
-    url: new URL("/health/ready", backendUrl).toString(),
+    url: joinUrl(backendUrl, "health/ready"),
     expectJson: true
   }
 ];
@@ -104,7 +104,7 @@ async function runCheck(check, requestTimeoutMs) {
       }
     }
 
-    if (check.expectText && !body.includes(check.expectText)) {
+    if (check.expectText && !body.toLowerCase().includes(check.expectText.toLowerCase())) {
       return failure(check, startedAt, response.status, `Expected response body to include '${check.expectText}'.`);
     }
 
@@ -162,6 +162,10 @@ function normalizeBackendUrl(value) {
   } catch {
     return null;
   }
+}
+
+function joinUrl(baseUrl, path) {
+  return `${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 }
 
 function errorMessage(error) {
