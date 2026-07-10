@@ -27,5 +27,5 @@
 
 ## Current Implementation Status
 
-- Done: API-aware home featured listings, API-aware property search with demo fallback, property detail and inquiry form, login/register screens wired to auth endpoints, password recovery screens, dashboard navigation shell, authenticated listings/inquiries/favorites pages, listing create/edit forms, gallery URL entry, direct listing image uploads, gallery ordering/cover controls, listing completeness validation, and admin review UI.
+- Done: API-aware home featured listings, API-aware property search with demo fallback, property detail and inquiry form, login/register screens wired to auth endpoints, password recovery screens, dashboard navigation shell, authenticated listings/inquiries/favorites pages, listing create/edit forms, gallery URL entry, direct listing image uploads, gallery ordering/cover controls, listing completeness validation, SEO metadata/structured data, and admin review UI.
 - Next: full browser QA against local backend, agent onboarding guidance, and production analytics/error monitoring.

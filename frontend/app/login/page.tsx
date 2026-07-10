@@ -1,5 +1,8 @@
 import { AuthForm } from "../../components/auth-form";
+import { noIndexMetadata } from "../../lib/seo";
 import "../page.css";
+
+export const metadata = noIndexMetadata;
 
 export default function LoginPage() {
   return (

@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
+  creator: siteConfig.name,
+  keywords: siteConfig.keywords,
+  publisher: siteConfig.name,
   alternates: {
     canonical: absoluteUrl("/")
   },
@@ -30,7 +33,19 @@ export const metadata: Metadata = {
     url: absoluteUrl("/"),
     siteName: siteConfig.name,
     title: "FindYourCrib | Verified rental homes in Thailand",
-    description: siteConfig.description
+    description: siteConfig.description,
+    locale: "en_TH"
+  },
+  robots: {
+    follow: true,
+    googleBot: {
+      follow: true,
+      index: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1
+    },
+    index: true
   },
   twitter: {
     card: "summary_large_image",

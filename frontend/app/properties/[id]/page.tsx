@@ -6,6 +6,7 @@ import { SiteFooter } from "../../../components/site-footer";
 import { SiteHeader } from "../../../components/site-header";
 import { getPropertyDetail } from "../../../lib/api";
 import { absoluteUrl } from "../../../lib/site";
+import { JsonLd } from "../../../lib/seo";
 import "../../page.css";
 
 const formatter = new Intl.NumberFormat("en-TH", {
@@ -31,6 +32,12 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
     alternates: {
       canonical: absoluteUrl(`/properties/${property.id}`)
     },
+    keywords: [
+      `${property.township} rental`,
+      `${property.province} property for rent`,
+      `${property.propertyType.replace("_", " ").toLowerCase()} for rent`,
+      "verified rental home"
+    ],
     openGraph: {
       title,
       description,
@@ -50,9 +57,59 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
   const { id } = await params;
   const { property, isFallback } = await getPropertyDetail(id);
   const heroImage = property.images[0]?.imageUrl ?? property.coverImageUrl;
+  const listingUrl = absoluteUrl(`/properties/${property.id}`);
 
   return (
     <main className="property-detail-page">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Residence",
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "TH",
+            addressLocality: property.township,
+            addressRegion: property.province,
+            streetAddress: property.address
+          },
+          description: property.description,
+          floorSize: property.sizeSqm
+            ? {
+                "@type": "QuantitativeValue",
+                unitCode: "MTK",
+                value: property.sizeSqm
+              }
+            : undefined,
+          geo:
+            property.latitude && property.longitude
+              ? {
+                  "@type": "GeoCoordinates",
+                  latitude: property.latitude,
+                  longitude: property.longitude
+                }
+              : undefined,
+          image: property.images.length ? property.images.map((image) => image.imageUrl) : heroImage ? [heroImage] : undefined,
+          name: property.title,
+          numberOfBathroomsTotal: property.bathrooms ?? undefined,
+          numberOfBedrooms: property.bedrooms ?? undefined,
+          offers: {
+            "@type": "Offer",
+            availability: "https://schema.org/InStock",
+            businessFunction: "https://schema.org/LeaseOut",
+            price: property.price,
+            priceCurrency: "THB",
+            url: listingUrl
+          },
+          provider: property.agent
+            ? {
+                "@type": "RealEstateAgent",
+                name: property.agent.name,
+                telephone: property.agent.phoneNumber ?? undefined
+              }
+            : undefined,
+          url: listingUrl
+        }}
+      />
       <SiteHeader />
       <section className="property-hero" style={{ backgroundImage: heroImage ? `url(${heroImage})` : undefined }}>
         <div className="page-shell property-hero-content">

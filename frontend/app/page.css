@@ -345,6 +345,34 @@
   padding-top: 54px;
 }
 
+.faq-section {
+  padding-bottom: 76px;
+}
+
+.faq-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.faq-grid article {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.faq-grid h3 {
+  font-size: 1rem;
+  margin: 0 0 10px;
+}
+
+.faq-grid p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
 .section-heading {
   align-items: flex-end;
   display: flex;
@@ -1638,6 +1666,7 @@
   .dashboard-frame,
   .listing-form,
   .listing-grid,
+  .faq-grid,
   .favorites-grid,
   .content-grid,
   .insight-strip {

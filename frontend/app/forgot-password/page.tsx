@@ -1,5 +1,8 @@
 import { ForgotPasswordForm } from "../../components/password-recovery-form";
+import { noIndexMetadata } from "../../lib/seo";
 import "../page.css";
+
+export const metadata = noIndexMetadata;
 
 export default function ForgotPasswordPage() {
   return (

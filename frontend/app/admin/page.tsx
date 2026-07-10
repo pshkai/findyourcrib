@@ -1,6 +1,9 @@
 import { AdminReviewPanel } from "../../components/admin-review-panel";
 import { DashboardShell } from "../../components/dashboard-shell";
+import { noIndexMetadata } from "../../lib/seo";
 import "../page.css";
+
+export const metadata = noIndexMetadata;
 
 export default function AdminPage() {
   return (

@@ -4,6 +4,7 @@ import { SiteFooter } from "../../components/site-footer";
 import { SiteHeader } from "../../components/site-header";
 import { absoluteUrl } from "../../lib/site";
 import { searchProperties } from "../../lib/api";
+import { JsonLd } from "../../lib/seo";
 import type { PropertySort, PropertyType } from "@findyourcrib/shared";
 import "../page.css";
 
@@ -31,7 +32,8 @@ export const metadata: Metadata = {
     title: "Browse verified rental homes",
     description: "Search verified condos, apartments, houses, and villas for rent in Thailand.",
     url: absoluteUrl("/properties")
-  }
+  },
+  keywords: ["Thailand rentals", "verified homes for rent", "Bangkok condos", "Phuket villas", "agent-managed listings"]
 };
 
 export default async function PropertiesPage({ searchParams }: PropertiesPageProps) {
@@ -56,6 +58,31 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
 
   return (
     <main>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: properties.map((property, index) => ({
+            "@type": "ListItem",
+            item: {
+              "@type": "Residence",
+              address: `${property.township}, ${property.province}`,
+              image: property.coverImageUrl ?? undefined,
+              name: property.title,
+              offers: {
+                "@type": "Offer",
+                price: property.price,
+                priceCurrency: "THB",
+                url: absoluteUrl(`/properties/${property.id}`)
+              },
+              url: absoluteUrl(`/properties/${property.id}`)
+            },
+            position: index + 1
+          })),
+          name: "Verified rental homes in Thailand",
+          url: absoluteUrl("/properties")
+        }}
+      />
       <SiteHeader />
       <section className="results-hero">
         <div className="page-shell results-header">

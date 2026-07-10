@@ -1,5 +1,8 @@
 import { ResetPasswordForm } from "../../components/password-recovery-form";
+import { noIndexMetadata } from "../../lib/seo";
 import "../page.css";
+
+export const metadata = noIndexMetadata;
 
 interface ResetPasswordPageProps {
   searchParams: Promise<{
