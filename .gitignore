@@ -14,3 +14,4 @@ uploads/
 *.sqlite
 *.db
 backend/generated/
+artifacts/
